@@ -5,6 +5,8 @@ This class is intended to keep information about a street. I.e. which vehicles a
 import random
 import math
 
+OFFSET = 10
+
 class Street():
     def __init__(self, street_pos, street_width):
         self.street_pos = street_pos  # NamedTuple
@@ -46,7 +48,18 @@ class Street():
         x=random.randint(self.street_pos.x1,self.street_pos.x2)
         y=random.randint(self.street_pos.y1, self.street_pos.y2)
         direction = 1 if random.random() < 0.5 else -1
-        return x, y, direction, self.street_degree
+        
+        # -direction to be on the right side on vertical streets
+        dx_offset=math.sin(math.radians(self.street_degree))*OFFSET * -direction
+        dy_offset=math.cos(math.radians(self.street_degree))*OFFSET * direction
+        
+        x+=dx_offset
+        y+=dy_offset
+
+        # turns around if direction is positiv
+        facing_degree = self.street_degree - 90*direction -90
+        
+        return x, y, direction, facing_degree
         
 
     def step(self):

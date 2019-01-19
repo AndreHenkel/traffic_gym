@@ -12,7 +12,7 @@ from display import Display
 from street import Street
 from vehicle import Vehicle
 
-STREET_IT = 4 # Street iterations
+STREET_IT = 5 # Street iterations
 VEHICLES_AMOUNT = 10
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 1200

@@ -34,7 +34,7 @@ class Display(arcade.Window):
             car_sprite = arcade.Sprite(CAR_ICON_FILE, ICON_COMPRESSION)
             car_sprite.center_x = veh.pos["x"] # Starting position
             car_sprite.center_y = veh.pos["y"]
-            car_sprite.angle = veh.facing_degree + 180*veh.direction
+            car_sprite.angle+= veh.facing_degree
             self.vehicle_spritelist.append(car_sprite)
         
         arcade.set_background_color(arcade.color.WHITE)
