@@ -5,31 +5,84 @@ This class is intended to keep information about a street. I.e. which vehicles a
 import random
 import math
 
+from utils import in_bet
+
 OFFSET = 10
+MAX_CROSSING_VIEW_DIST = 400
 
 class Street():
-    def __init__(self, street_pos, street_width):
+    def __init__(self, street_name, street_pos, street_width):
+        self.street_name = street_name
         self.street_pos = street_pos  # NamedTuple
         self.street_width = street_width
         self.crossings = []
         self.street_degree = math.degrees(math.atan2((self.street_pos.y2-self.street_pos.y1), (self.street_pos.x2-self.street_pos.x1)))
 
-    def set_crossings(self, crossings):
+    def add_crossing(self, crossing):
         """
         Gives the ability to define crossings later.
         Params:
             * crossings: [{x,y,Crossing},...]
         """
-        pass
+        self.crossings.append(crossing)
         
     def move(self, pos, distance, direction):
       """
       Takes position of vehicle and direction and with the distance of movement returns the new position on the street
       """
-      dx=math.cos(math.radians(self.street_degree))*distance * direction
-      dy=math.sin(math.radians(self.street_degree))*distance * direction
+      dx=-math.cos(math.radians(self.street_degree))*distance * direction
+      dy=-math.sin(math.radians(self.street_degree))*distance * direction
+      
+      # At some point maybe also return the crossing in this function ...
+      #cros = False
+      
+      #for c in self.crossings:
+       #   if in_bet(pos["x"],pos["y"]
+                    
+                    # the vehicles have an offset.
+      
       return dx,dy
       
+    def is_between(self, a,b,c):
+        """
+        assuming single numbers:
+        is c between a and b
+        """
+        if (c > a and c < b) or (c < a and c > b):
+            return True
+        else:
+            return False
+      
+    def get_next_crossing(self, pos, direction):
+        # currently assuming there are only horizontal and vertical streets
+        x_dis = self.street_pos.x1 - self.street_pos.x2
+        print(x_dis)
+        if x_dis > -1 and x_dis < 1:
+            # ignore x 
+            dy =-math.sin(math.radians(self.street_degree))*MAX_CROSSING_VIEW_DIST * direction #driving view distance
+            closest_cr = 0
+            closest_cr_dist = MAX_CROSSING_VIEW_DIST
+            print("Pos y: {}".format(pos["y"]))
+            print("Dy+p : {}".format(dy+pos["y"]))
+            for cr in self.crossings:
+                print("cr_pos y: {}".format(cr.pos["y"]))
+                cr_dist = abs(cr.pos["y"] - pos["y"])
+                if cr_dist < closest_cr_dist and self.is_between(pos["y"],pos["y"]+dy,cr.pos["y"]): # the second condition checks that the next crossing is in the direction the car is driving
+                    print("is closer")
+                    closest_cr_dist = cr_dist
+                    closest_cr = cr
+            return closest_cr
+        else:
+            # ignore y
+            dx =-math.cos(math.radians(self.street_degree))*MAX_CROSSING_VIEW_DIST * direction #driving view distance
+            closest_cr = 0
+            closest_cr_dist = MAX_CROSSING_VIEW_DIST
+            for cr in self.crossings:
+                cr_dist = abs(cr.pos["x"] - pos["x"])
+                if cr_dist < closest_cr_dist and self.is_between(pos["x"],pos["x"]+dx,cr.pos["x"]): # the second condition checks that the next crossing is in the direction the car is driving
+                    closest_cr_dist = cr_dist
+                    closest_cr = cr
+            return closest_cr
       
     def is_on_street(self, pos):
         return True
