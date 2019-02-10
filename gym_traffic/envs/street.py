@@ -18,6 +18,18 @@ class Street():
         self.crossings = []
         self.street_degree = math.degrees(math.atan2((self.street_pos.y2-self.street_pos.y1), (self.street_pos.x2-self.street_pos.x1)))
 
+    def info(self):
+        print("------------------------------------------------")
+        print("street_name:     {}".format(self.street_name))
+        print("street_pos:      {}".format(self.street_pos))
+        print("street_degree:   {}".format(self.street_degree))
+        print("crossings:   {}".format(len(self.crossings)))
+        for cr in self.crossings:
+            print("cr-> pos: {}, streets: {}".format(cr.pos,cr.streets))
+            for st in cr.streets:
+                print("     street_pos: {}".format(st.street_pos))
+        print("------------------------------------------------")
+
     def add_crossing(self, crossing):
         """
         Gives the ability to define crossings later.
@@ -56,19 +68,14 @@ class Street():
     def get_next_crossing(self, pos, direction):
         # currently assuming there are only horizontal and vertical streets
         x_dis = self.street_pos.x1 - self.street_pos.x2
-        print(x_dis)
         if x_dis > -1 and x_dis < 1:
             # ignore x 
             dy =-math.sin(math.radians(self.street_degree))*MAX_CROSSING_VIEW_DIST * direction #driving view distance
             closest_cr = 0
             closest_cr_dist = MAX_CROSSING_VIEW_DIST
-            print("Pos y: {}".format(pos["y"]))
-            print("Dy+p : {}".format(dy+pos["y"]))
             for cr in self.crossings:
-                print("cr_pos y: {}".format(cr.pos["y"]))
                 cr_dist = abs(cr.pos["y"] - pos["y"])
                 if cr_dist < closest_cr_dist and self.is_between(pos["y"],pos["y"]+dy,cr.pos["y"]): # the second condition checks that the next crossing is in the direction the car is driving
-                    print("is closer")
                     closest_cr_dist = cr_dist
                     closest_cr = cr
             return closest_cr
@@ -114,12 +121,20 @@ class Street():
         
         return x, y, direction, facing_degree
         
+    def get_facing_degree(self, pos, direction):
+        """
+            pos is ignored for now
+        """
+        facing_degree = self.street_degree - 90*direction -90
+        return facing_degree
+        
+        
 
     def step(self):
         pass
 
     def is_free(self, pos, direction, licPlt):
         """
-        checks if a car is in that position(+buffer, length and same direction), except for own vehicle
+        checks if a car is in front of him/that position(+buffer, length and same direction), except for own vehicle
         """
         pass

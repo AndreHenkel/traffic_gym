@@ -21,6 +21,9 @@ STREET_WIDTH = 10
 
 Street_Pos = collections.namedtuple('Street_Pos', 'x1 y1 x2 y2')
 
+CAR_ICON_FILE = "img/car1.png"
+ICON_COMPRESSION = 0.1
+
 class Controller():
     def __init__(self,width, height):
         self.streets = []
@@ -33,17 +36,18 @@ class Controller():
         self.generate_map()
         self.generate_vehicles()
 
+    #deprecated
     def generate_streets(self):
         street_buffer = {}
         # starting from one to not have streets at the border
         for i in range(1,STREET_IT):
             # horizontal
-            height = (self.height / STREET_IT * i)
+            height = (self.height / STREET_IT) * i
             sh = Street("h"+str(i),Street_Pos(x1=0, y1=height, x2=self.width, y2=height), STREET_WIDTH)
             street_buffer["h"+str(i)] = sh
             self.streets.append(sh)
             # vertical
-            width = (self.width / STREET_IT * i)
+            width = (self.width / STREET_IT) * i
             sv = Street("v"+str(1),Street_Pos(x1=width, y1=0, x2=width, y2=self.height), STREET_WIDTH)
             street_buffer["v"+str(1)] = sv
             self.streets.append(sv)
@@ -52,38 +56,51 @@ class Controller():
         named_street_buffer = {}
         # generate horizontals and keep in buffer 
         for i in range(1,STREET_IT):
-            height = (self.height / STREET_IT * i)
-            sh = Street("h"+str(i),Street_Pos(x1=0, y1=height, x2=self.width, y2=height), STREET_WIDTH)
+            crnt_height = (self.height / STREET_IT) * i
+            sh = Street("h"+str(i),Street_Pos(x1=0, y1=crnt_height, x2=self.width, y2=crnt_height), STREET_WIDTH)
             named_street_buffer["h"+str(i)] = sh
             
         # then generate verticals and combine them with crossings
         for vi in range(1,STREET_IT):
-            width = (self.width / STREET_IT * vi)
-            sv = Street("v"+str(vi),Street_Pos(x1=width, y1=0, x2=width, y2=self.height), STREET_WIDTH)
+            crnt_width = (self.width / STREET_IT) * vi
+            sv = Street("v"+str(vi),Street_Pos(x1=crnt_width, y1=0, x2=crnt_width, y2=self.height), STREET_WIDTH)
             named_street_buffer["v"+str(vi)] = sv
             
             for hi in range(1,STREET_IT):
-                height = (self.height / STREET_IT * hi)
+                crnt_height = (self.height / STREET_IT) * hi
                 cros_streets = []
-                print(named_street_buffer["v"+str(vi)])
                 cros_streets.append(named_street_buffer["v"+str(vi)])
                 cros_streets.append(named_street_buffer["h"+str(hi)])
-                print(named_street_buffer)
-                cros = Crossing({"x":width, "y": height}, cros_streets)
-                print("crossing street numbers: {}".format(len(cros.streets)))
+                
+                #for cst in cros_streets:
+                   # print("Cross_Streets: {}".format(cst.street_pos))
+                
+                cros = Crossing({"x":crnt_width, "y": crnt_height}, cros_streets)
                 named_street_buffer["v"+str(vi)].add_crossing(cros)
                 named_street_buffer["h"+str(hi)].add_crossing(cros)
                 self.crossings.append(cros)
                 
+                print("-----------")
+                print(named_street_buffer["v"+str(vi)].street_pos)
+                print(named_street_buffer["h"+str(hi)].street_pos)
+                named_street_buffer["v"+str(vi)].info()
+                named_street_buffer["h"+str(hi)].info()
+                print("-----------")
+                
         self.streets = list(named_street_buffer.values())
         # then put everything into streets again
 
-
+     #   while True:
+      #      a  = 0
 
     def generate_vehicles(self):
         for i in range(0,VEHICLES_AMOUNT):
             crt_street = np.random.choice(self.streets)
             veh = self.generate_vehicle(crt_street)
+            veh.arcade = arcade.Sprite(CAR_ICON_FILE, ICON_COMPRESSION)
+            veh.arcade.center_x = veh.pos["x"] # Starting position
+            veh.arcade.center_y = veh.pos["y"]
+            veh.arcade.angle+= veh.facing_degree
             self.vehicles.append(veh)
             
     def generate_vehicle(self, vehs_street):
