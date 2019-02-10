@@ -1,3 +1,24 @@
+# Setup
+
+Use Python3.4 or newer.
+Have an python environment with following packages installed:
+
+
+keyboard
+pytorch
+tensorboardX
+matplotlib
+numpy
+arcade
+
+You can install them via pip.
+Currently not all packages are actuall used, but they probably will.
+Afterwards you can go to "gym_traffic/gym_traffic/envs" and there use your installed python to start the "start_sim.py" script
+
+
+Following section is an idea and is not yet completely implemented.
+---------------------------------------------------------------------
+
 # Overview
 This project is intended to provide a very basic simulation of traffic with mutliple streets and crossings.
 Those crossings can be manipulated by an agent. Just one direction of street (currently only 2 streets at a crossing) can be activated at a time.
