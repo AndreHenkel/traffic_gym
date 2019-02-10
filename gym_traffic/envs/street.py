@@ -44,15 +44,6 @@ class Street():
       """
       dx=-math.cos(math.radians(self.street_degree))*distance * direction
       dy=-math.sin(math.radians(self.street_degree))*distance * direction
-      
-      # At some point maybe also return the crossing in this function ...
-      #cros = False
-      
-      #for c in self.crossings:
-       #   if in_bet(pos["x"],pos["y"]
-                    
-                    # the vehicles have an offset.
-      
       return dx,dy
       
     def is_between(self, a,b,c):
@@ -109,10 +100,7 @@ class Street():
         y=random.randint(self.street_pos.y1, self.street_pos.y2)
         direction = 1 if random.random() < 0.5 else -1
         
-        # -direction to be on the right side on vertical streets
-        dx_offset=math.sin(math.radians(self.street_degree))*OFFSET * -direction
-        dy_offset=math.cos(math.radians(self.street_degree))*OFFSET * direction
-        
+        dx_offset,dy_offset = self.get_offset(direction)
         x+=dx_offset
         y+=dy_offset
 
@@ -121,6 +109,12 @@ class Street():
         
         return x, y, direction, facing_degree
         
+    def get_offset(self, direction):
+        # -direction to be on the right side on vertical streets
+        dx_offset=math.sin(math.radians(self.street_degree))*OFFSET * -direction
+        dy_offset=math.cos(math.radians(self.street_degree))*OFFSET * direction
+        return dx_offset, dy_offset
+
     def get_facing_degree(self, pos, direction):
         """
             pos is ignored for now
@@ -128,8 +122,6 @@ class Street():
         facing_degree = self.street_degree - 90*direction -90
         return facing_degree
         
-        
-
     def step(self):
         pass
 

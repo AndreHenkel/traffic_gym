@@ -46,21 +46,8 @@ class Display(arcade.Window):
             veh.draw()
 
     def on_draw(self):
-        for veh in self.cnt.vehicles:
-            veh.drive()
-            if veh.pos["x"] <0 or veh.pos["x"]>self.width:
-                self.cnt.vehicles.remove(veh)
-            elif veh.pos["y"] <0 or veh.pos["y"]>self.height:
-                self.cnt.vehicles.remove(veh)
-            veh.update()
-            #veh.update_animation()
-            
-        if random.random() > 0.99:
-            gen_veh=self.cnt.generate_vehicle(np.random.choice(self.cnt.streets))
-            self.cnt.vehicles.append(gen_veh)
         """ Render the screen. """
         arcade.start_render()
-        # Your drawing code goes here
         # draw all streets
         for street in self.cnt.streets:
             arcade.draw_line(street.street_pos.x1, street.street_pos.y1,street.street_pos.x2, street.street_pos.y2, arcade.color.WOOD_BROWN, 80)#street.street_width*STREET_WIDTH_MULTI)
@@ -73,6 +60,16 @@ class Display(arcade.Window):
             For an first easy implementation, all vehicles from control will be sent here and drawn as sprites.  
             Those sprites will be identified through the unique "registration plate number" on each vehicle.
         """
-        
+        for veh in self.cnt.vehicles:
+            veh.drive()
+            if veh.pos["x"] <0 or veh.pos["x"]>self.width:
+                self.cnt.vehicles.remove(veh)
+            elif veh.pos["y"] <0 or veh.pos["y"]>self.height:
+                self.cnt.vehicles.remove(veh)
+            if len(self.cnt.vehicles)<5: #random.random() > 10.99:
+                gen_veh=self.cnt.generate_vehicle(np.random.choice(self.cnt.streets))
+                self.cnt.vehicles.append(gen_veh)
+            #veh.update()
+            #veh.update_animation()
 
 

@@ -15,7 +15,7 @@ from vehicle import Vehicle
 from crossing import Crossing
 
 STREET_IT = 5 # Street iterations
-VEHICLES_AMOUNT = 10
+VEHICLES_AMOUNT = 5
 
 STREET_WIDTH = 10
 
