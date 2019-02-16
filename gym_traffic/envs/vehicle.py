@@ -43,10 +43,11 @@ class Vehicle():
         self.arcade.center_x=self.pos["x"]
         self.arcade.center_y=self.pos["y"]
         
-    def set_pos(self,pos):
-        self.pos = pos
-        self.arcade.center_x=self.pos["x"]
-        self.arcade.center_y=self.pos["y"]
+    def set_pos(self,new_pos):
+        self.pos["x"] = new_pos["x"]
+        self.pos["y"] = new_pos["y"]
+        self.arcade.center_x=new_pos["x"]
+        self.arcade.center_y=new_pos["y"]
         
     def get_new_pos(self,dx,dy):
         return {"x": self.pos["x"]+dx, "y": self.pos["y"]+dy}
