@@ -51,9 +51,18 @@ class Display(arcade.Window):
         # draw all streets
         for street in self.cnt.streets:
             arcade.draw_line(street.street_pos.x1, street.street_pos.y1,street.street_pos.x2, street.street_pos.y2, arcade.color.WOOD_BROWN, 80)#street.street_width*STREET_WIDTH_MULTI)
+        #draw crossings
+        for cros in self.cnt.crossings:
+            t_lights = cros.get_traffic_lights()
+            for tl in t_lights:
+                if tl.activated:
+                    arcade.draw_circle_outline(tl.pos["x"], tl.pos["y"], 4, arcade.color.GREEN, 3)
+                else:
+                    arcade.draw_circle_outline(tl.pos["x"], tl.pos["y"], 4, arcade.color.RED, 3)
+        
         # draw all vehicles
         self.veh_draw()
-        arcade.finish_render()
+        #arcade.finish_render()
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. 
@@ -71,5 +80,7 @@ class Display(arcade.Window):
                 self.cnt.vehicles.append(gen_veh)
             #veh.update()
             #veh.update_animation()
-
+        if random.random()>0.98:
+            cros = np.random.choice(self.cnt.crossings)
+            cros.switch_traffic_light()
 

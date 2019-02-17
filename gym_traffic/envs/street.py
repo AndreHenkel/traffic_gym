@@ -7,6 +7,7 @@ import math
 
 from utils import in_bet
 
+
 OFFSET = 10
 MAX_CROSSING_VIEW_DIST = 400
 
@@ -122,8 +123,6 @@ class Street():
         facing_degree = self.street_degree - 90*direction -90
         return facing_degree
         
-    def step(self):
-        pass
 
     def is_free(self, pos, direction, licPlt):
         """
