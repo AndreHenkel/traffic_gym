@@ -76,13 +76,17 @@ class Vehicle():
         #self.info()
         if self.next_crossing:
             if self.dist(self.get_new_pos(dx,dy), self.next_crossing.pos) < DIST_TO_TURN:
-                self.street = random.choice(self.next_crossing.streets)
-                self.set_pos(self.next_crossing.pos)
-                dx_offset, dy_offset = self.street.get_offset(self.direction)
-                self.move(dx_offset, dy_offset)
-                self.next_crossing = 0
-                self.arcade.angle = self.street.get_facing_degree(self.pos, self.direction)
-                return
+                if self.next_crossing.get_my_traffic_light(self.street,self.direction).activated:
+                    self.street = random.choice(self.next_crossing.streets)
+                    self.set_pos(self.next_crossing.pos)
+                    dx_offset, dy_offset = self.street.get_offset(self.direction)
+                    self.move(dx_offset, dy_offset)
+                    self.next_crossing = 0
+                    self.arcade.angle = self.street.get_facing_degree(self.pos, self.direction)
+                    return
+                else:
+                    #wait
+                    return
             else:
                 self.move(dx,dy)
         elif self.crossed <= 0:

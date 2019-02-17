@@ -80,7 +80,7 @@ class Display(arcade.Window):
                 self.cnt.vehicles.append(gen_veh)
             #veh.update()
             #veh.update_animation()
-        if random.random()>0.98:
+        if random.random()>0.97:
             cros = np.random.choice(self.cnt.crossings)
             cros.switch_traffic_light()
 
