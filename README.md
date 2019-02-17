@@ -13,6 +13,8 @@ arcade
 
 You can install them via pip.
 Currently not all packages are actuall used, but they probably will.
+NOTE: You have to put an icon with a car into the "envs/img/" folder named "car1.png" so that the simulation can take this image to show the traffic.
+Because I don't have the rights on the png image I use, I cannot upload it.
 Afterwards you can go to "gym_traffic/gym_traffic/envs" and there use your installed python to start the "start_sim.py" script
 
 
