@@ -17,6 +17,7 @@ class Street():
         self.street_pos = street_pos  # NamedTuple
         self.street_width = street_width
         self.crossings = []
+        self.vehicles = []
         self.street_degree = math.degrees(math.atan2((self.street_pos.y2-self.street_pos.y1), (self.street_pos.x2-self.street_pos.x1)))
 
     def info(self):
@@ -38,6 +39,11 @@ class Street():
             * crossings: [{x,y,Crossing},...]
         """
         self.crossings.append(crossing)
+        
+    def remove_vehicle(self, licNr):
+        for v in self.vehicles:
+            if v.licNr == licNr:
+                self.vehicles.remove(v)
         
     def move(self, pos, distance, direction):
       """
@@ -124,8 +130,21 @@ class Street():
         return facing_degree
         
 
-    def is_free(self, pos, direction, licPlt):
+    def is_free(self, pos, direction, length, licNr):
         """
-        checks if a car is in front of him/that position(+buffer, length and same direction), except for own vehicle
+        checks if a car is in front of him/that position(+buffer, length and same direction), except for own vehicle.
+        Returns boolean
         """
-        pass
+        x_dis = self.street_pos.x1 - self.street_pos.x2
+        if x_dis > -1 and x_dis < 1:
+            # ignore x 
+            dy =-math.sin(math.radians(self.street_degree))*length * direction #driving view distance
+            for v in self.vehicles:
+                if v.licNr != licNr and direction == v.direction and self.is_between(pos["y"],pos["y"]+dy,v.pos["y"]):
+                    return False
+        else:
+            dx =-math.cos(math.radians(self.street_degree)) * length * direction #driving view distance
+            for v in self.vehicles:
+                if  v.licNr != licNr and direction == v.direction and self.is_between(pos["x"],pos["x"]+dx,v.pos["x"]):
+                    return False
+        return True

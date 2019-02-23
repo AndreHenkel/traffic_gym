@@ -10,11 +10,11 @@ ICON_COMPRESSION = 0.1
 DIST_TO_TURN = 15
 
 class Vehicle():
-    def __init__(self, start_pos, start_velocity, length, regPlate, direction, street, facing_degree):
+    def __init__(self, start_pos, start_velocity, length, licNr, direction, street, facing_degree):
         self.pos = start_pos # {x,y}
         self.velocity = start_velocity # m/s
         self.length = length # m
-        self.regPlate =  regPlate # individual registration plate id
+        self.licNr =  licNr # individual licence Number ID
         self.direction = direction # bool
         self.facing_degree = facing_degree
         self.street = street
@@ -42,6 +42,7 @@ class Vehicle():
         self.pos["y"]+=dy
         self.arcade.center_x=self.pos["x"]
         self.arcade.center_y=self.pos["y"]
+        # else, don't move
         
     def set_pos(self,new_pos):
         self.pos["x"] = new_pos["x"]
@@ -77,23 +78,22 @@ class Vehicle():
         if self.next_crossing:
             if self.dist(self.get_new_pos(dx,dy), self.next_crossing.pos) < DIST_TO_TURN:
                 if self.next_crossing.get_my_traffic_light(self.street,self.direction).activated:
+                    self.street.remove_vehicle(self.licNr)
                     self.street = random.choice(self.next_crossing.streets)
+                    self.street.vehicles.append(self)
                     self.set_pos(self.next_crossing.pos)
                     dx_offset, dy_offset = self.street.get_offset(self.direction)
                     self.move(dx_offset, dy_offset)
                     self.next_crossing = 0
                     self.arcade.angle = self.street.get_facing_degree(self.pos, self.direction)
-                    return
-                else:
-                    #wait
-                    return
-            else:
+                # else wait
+            elif self.street.is_free(self.pos, self.direction, 30, self.licNr):
                 self.move(dx,dy)
-        elif self.crossed <= 0:
+        elif self.crossed <= 0 and self.street.is_free(self.pos, self.direction, 30, self.licNr):
             self.next_crossing = self.street.get_next_crossing(self.pos, self.direction)
             self.crossed = 3
             self.move(dx,dy)
-        else:
+        elif self.street.is_free(self.pos, self.direction, 30, self.licNr):
             self.crossed = self.crossed -1
             self.move(dx,dy)
         
