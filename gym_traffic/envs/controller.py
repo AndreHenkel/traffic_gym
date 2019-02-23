@@ -15,7 +15,7 @@ from vehicle import Vehicle
 from crossing import Crossing
 
 STREET_IT = 5 # Street iterations
-VEHICLES_AMOUNT = 5
+VEHICLES_AMOUNT = 20
 
 STREET_WIDTH = 10
 
@@ -101,9 +101,10 @@ class Controller():
             veh.arcade.center_x = veh.pos["x"] # Starting position
             veh.arcade.center_y = veh.pos["y"]
             veh.arcade.angle+= veh.facing_degree
+            veh.street.vehicles.append(veh)
             self.vehicles.append(veh)
             
     def generate_vehicle(self, vehs_street):
         veh_x, veh_y, veh_dir, fac_deg = vehs_street.random_pos()
-        return Vehicle({"x":veh_x, "y":veh_y}, 0, 0.2, randint(0,20), veh_dir,vehs_street, fac_deg)
+        return Vehicle({"x":veh_x, "y":veh_y}, 0, 0.2, randint(0,10000), veh_dir,vehs_street, fac_deg)
         
