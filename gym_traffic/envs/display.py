@@ -72,10 +72,12 @@ class Display(arcade.Window):
         for veh in self.cnt.vehicles:
             veh.drive()
             if veh.pos["x"] <0 or veh.pos["x"]>self.width:
+                veh.street.remove_vehicle(veh.licNr)
                 self.cnt.vehicles.remove(veh)
             elif veh.pos["y"] <0 or veh.pos["y"]>self.height:
+                veh.street.remove_vehicle(veh.licNr)
                 self.cnt.vehicles.remove(veh)
-            if len(self.cnt.vehicles)<5: #random.random() > 10.99:
+            if len(self.cnt.vehicles)<20: #random.random() > 10.99:
                 gen_veh=self.cnt.generate_vehicle(np.random.choice(self.cnt.streets))
                 self.cnt.vehicles.append(gen_veh)
             #veh.update()
