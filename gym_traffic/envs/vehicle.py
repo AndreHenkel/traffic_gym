@@ -8,6 +8,7 @@ import random
 CAR_ICON_FILE = "img/car1.png"
 ICON_COMPRESSION = 0.1
 DIST_TO_TURN = 15
+DIST_TO_NEXT_CAR = 30
 
 class Vehicle():
     def __init__(self, start_pos, start_velocity, length, licNr, direction, street, facing_degree):
@@ -87,13 +88,13 @@ class Vehicle():
                     self.next_crossing = 0
                     self.arcade.angle = self.street.get_facing_degree(self.pos, self.direction)
                 # else wait
-            elif self.street.is_free(self.pos, self.direction, 30, self.licNr):
+            elif self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
                 self.move(dx,dy)
-        elif self.crossed <= 0 and self.street.is_free(self.pos, self.direction, 30, self.licNr):
+        elif self.crossed <= 0 and self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
             self.next_crossing = self.street.get_next_crossing(self.pos, self.direction)
             self.crossed = 3
             self.move(dx,dy)
-        elif self.street.is_free(self.pos, self.direction, 30, self.licNr):
+        elif self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
             self.crossed = self.crossed -1
             self.move(dx,dy)
         

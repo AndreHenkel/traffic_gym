@@ -6,6 +6,7 @@ import arcade
 import numpy as np
 from controller import Controller
 import random
+from utils import dist
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -44,6 +45,8 @@ class Display(arcade.Window):
     def veh_draw(self):
         for veh in self.cnt.vehicles:
             veh.draw()
+            
+    
 
     def on_draw(self):
         """ Render the screen. """
@@ -63,6 +66,15 @@ class Display(arcade.Window):
         # draw all vehicles
         self.veh_draw()
         #arcade.finish_render()
+        #print(self._projection) #test if it works
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        
+        for c in self.cnt.crossings:
+            pos = {"x":x,"y":y}
+            if dist(self,pos,c.pos) < 10:
+                c.switch_traffic_light()
+                return
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. 
