@@ -33,6 +33,7 @@ class Controller():
         self.width = width
         self.height = height
 
+    def setup(self):
         self.generate_map()
         self.generate_vehicles()
 

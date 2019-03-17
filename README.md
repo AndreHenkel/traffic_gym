@@ -1,3 +1,7 @@
+This branch will continue with cleaning up the code and making it to an openai gym
+I will leave the other branch for now, because it can be used as a little playing game :)
+
+
 # Setup
 
 Use Python3.4 or newer.
@@ -41,10 +45,9 @@ The action space will consist of N variables with each time either +1 for changi
 When the lightning was told to switch, the agent cannot manipulate it anymore until it has finished the switching part.
 
 # Observation Space
-Still unclear what to show the agent.
-Just the graphical input would be one idea,
-giving him information about the situation on the street another.
-
+The Observation Space will have following information:
+  * All traffic light statuses (boolean)
+  * The amount of cars directly affected by each traffic light
 
 # Architecture
 The program will have following classes

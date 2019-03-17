@@ -35,13 +35,13 @@ class Display(pyglet.window.Window):
         """
         #super().__init__(cnt.width, cnt.height)
         super(Display, self).__init__(SCREEN_WIDTH, SCREEN_HEIGHT, resizable=False, fullscreen=False, caption="Display")
-        self.clear()
         self.cnt = cnt
-        arcade.set_background_color(arcade.color.WHITE)
+        
 
     def setup(self):
         # Set up your game here
-        pass
+        self.clear()
+        arcade.set_background_color(arcade.color.WHITE)
 
     def veh_draw(self):
         for veh in self.cnt.vehicles:
@@ -97,6 +97,7 @@ class Display(pyglet.window.Window):
             Those sprites will be identified through the unique "registration plate number" on each vehicle.
         """
         for veh in self.cnt.vehicles:
+            #let vehicles drive
             veh.drive()
             if veh.pos["x"] <0 or veh.pos["x"]>self.width:
                 veh.street.remove_vehicle(veh.licNr)
@@ -104,11 +105,12 @@ class Display(pyglet.window.Window):
             elif veh.pos["y"] <0 or veh.pos["y"]>self.height:
                 veh.street.remove_vehicle(veh.licNr)
                 self.cnt.vehicles.remove(veh)
-            if len(self.cnt.vehicles)<20: #random.random() > 10.99:
-                gen_veh=self.cnt.generate_vehicle(np.random.choice(self.cnt.streets))
-                self.cnt.vehicles.append(gen_veh)
-            #veh.update()
-            #veh.update_animation()
+                
+        if len(self.cnt.vehicles)<20: #random.random() > 10.99:
+            gen_veh=self.cnt.generate_vehicle(np.random.choice(self.cnt.streets))
+            self.cnt.vehicles.append(gen_veh)
+
+        # change traffic lights
         if random.random()>0.97:
             cros = np.random.choice(self.cnt.crossings)
             cros.switch_traffic_light()

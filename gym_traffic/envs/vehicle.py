@@ -79,6 +79,7 @@ class Vehicle():
         if self.next_crossing:
             if self.dist(self.get_new_pos(dx,dy), self.next_crossing.pos) < DIST_TO_TURN:
                 if self.next_crossing.get_my_traffic_light(self.street,self.direction).activated:
+                    self.next_crossing.get_my_traffic_light(self.street,self.direction).rm_aff_veh()
                     self.street.remove_vehicle(self.licNr)
                     self.street = random.choice(self.next_crossing.streets)
                     self.street.vehicles.append(self)
@@ -92,6 +93,7 @@ class Vehicle():
                 self.move(dx,dy)
         elif self.crossed <= 0 and self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
             self.next_crossing = self.street.get_next_crossing(self.pos, self.direction)
+            self.next_crossing.get_my_traffic_light(self.street,self.direction).add_aff_veh()
             self.crossed = 3
             self.move(dx,dy)
         elif self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):

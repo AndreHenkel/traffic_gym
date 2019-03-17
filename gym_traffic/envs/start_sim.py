@@ -1,6 +1,7 @@
 from controller import Controller
-import arcade
 from display import Display
+
+import arcade
 import time
 from pyglet import clock
 
@@ -10,6 +11,7 @@ SCREEN_HEIGHT = 600
 def main():
     
     cnt = Controller(SCREEN_WIDTH, SCREEN_HEIGHT)
+    cnt.setup()
     display = Display(cnt)
    # display.setup()
     while True:
