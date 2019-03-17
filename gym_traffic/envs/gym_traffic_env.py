@@ -23,12 +23,17 @@ class GymTrafficEnv(gym.Env):
         self.display = Display(cnt)
         
     def setup(self):
-        print("setup")
         self.cnt.setup()
         self.display.setup()
         
     def step(self, action):
-        print("step")
+        
+        #if render mode= human:
+        #   display.on_draw()
+        #   display.dispatch_events()
+        
+        #action here
+        
         #render to screen and flip frame buffers
         display.update(10)
         display.on_draw()
@@ -45,10 +50,14 @@ class GymTrafficEnv(gym.Env):
         Description:
     """
         print("reward")
+        standing_veh_count = self.cnt.get_standing_car_count()
+        neg_rew_per_veh = -0.33
+        reward = standing_veh_count * neg_rew_per_veh
+        return reward
     
 
     def _get_observation_space(self):
         """
-            Description:
+            Description: Status of all traffic lights, and status about the affected vehicles by each traffic light
         """
         print("observation")

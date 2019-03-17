@@ -96,22 +96,5 @@ class Display(pyglet.window.Window):
             For an first easy implementation, all vehicles from control will be sent here and drawn as sprites.  
             Those sprites will be identified through the unique "registration plate number" on each vehicle.
         """
-        for veh in self.cnt.vehicles:
-            #let vehicles drive
-            veh.drive()
-            if veh.pos["x"] <0 or veh.pos["x"]>self.width:
-                veh.street.remove_vehicle(veh.licNr)
-                self.cnt.vehicles.remove(veh)
-            elif veh.pos["y"] <0 or veh.pos["y"]>self.height:
-                veh.street.remove_vehicle(veh.licNr)
-                self.cnt.vehicles.remove(veh)
-                
-        if len(self.cnt.vehicles)<20: #random.random() > 10.99:
-            gen_veh=self.cnt.generate_vehicle(np.random.choice(self.cnt.streets))
-            self.cnt.vehicles.append(gen_veh)
-
-        # change traffic lights
-        if random.random()>0.97:
-            cros = np.random.choice(self.cnt.crossings)
-            cros.switch_traffic_light()
+        self.cnt.step()
 

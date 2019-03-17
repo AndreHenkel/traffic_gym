@@ -7,6 +7,7 @@ import collections
 import arcade
 import numpy as np
 from random import randint
+import random
 import time
 from threading import Thread
 
@@ -109,3 +110,29 @@ class Controller():
         veh_x, veh_y, veh_dir, fac_deg = vehs_street.random_pos()
         return Vehicle({"x":veh_x, "y":veh_y}, 0, 0.2, randint(0,10000), veh_dir,vehs_street, fac_deg)
         
+
+    def step(self):
+        for veh in self.vehicles:
+            #let vehicles drive
+            veh.drive()
+            if veh.pos["x"] <0 or veh.pos["x"]>self.width:
+                veh.street.remove_vehicle(veh.licNr)
+                self.vehicles.remove(veh)
+            elif veh.pos["y"] <0 or veh.pos["y"]>self.height:
+                veh.street.remove_vehicle(veh.licNr)
+                self.vehicles.remove(veh)
+                
+        if len(self.vehicles)<20: #random.random() > 10.99:
+            gen_veh=self.generate_vehicle(np.random.choice(self.streets))
+            self.vehicles.append(gen_veh)
+
+        # change traffic lights
+        if random.random()>0.97:
+            cros = np.random.choice(self.crossings)
+            cros.switch_traffic_light()
+            
+    def get_standing_car_count(self):
+        cnt = 0
+        for veh in self.vehicles:
+            if veh.last_moved_dist == 0:
+                cnt+=1

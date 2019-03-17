@@ -27,6 +27,7 @@ class Vehicle():
         self.max_speed_down = 20 #m/s²
     
         self.next_crossing = 0
+        self.last_moved_dist = 0
         
         # waits a bit until the next crossing is checked
         self.crossed = 1
@@ -43,7 +44,8 @@ class Vehicle():
         self.pos["y"]+=dy
         self.arcade.center_x=self.pos["x"]
         self.arcade.center_y=self.pos["y"]
-        # else, don't move
+        self.last_moved_dist = dx+dy # because one is usually zero anyway, and it matters more, if it changed at all
+        
         
     def set_pos(self,new_pos):
         self.pos["x"] = new_pos["x"]
@@ -75,7 +77,6 @@ class Vehicle():
 
     def drive(self):
         dx,dy = self.street.move(0,1,self.direction)
-        #self.info()
         if self.next_crossing:
             if self.dist(self.get_new_pos(dx,dy), self.next_crossing.pos) < DIST_TO_TURN:
                 if self.next_crossing.get_my_traffic_light(self.street,self.direction).activated:
@@ -88,12 +89,14 @@ class Vehicle():
                     self.move(dx_offset, dy_offset)
                     self.next_crossing = 0
                     self.arcade.angle = self.street.get_facing_degree(self.pos, self.direction)
-                # else wait
+                else:
+                    self.last_moved_dist = 0 # stand
             elif self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
                 self.move(dx,dy)
         elif self.crossed <= 0 and self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
             self.next_crossing = self.street.get_next_crossing(self.pos, self.direction)
-            self.next_crossing.get_my_traffic_light(self.street,self.direction).add_aff_veh()
+            if self.next_crossing:
+                self.next_crossing.get_my_traffic_light(self.street,self.direction).add_aff_veh()
             self.crossed = 3
             self.move(dx,dy)
         elif self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
