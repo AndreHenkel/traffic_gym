@@ -22,7 +22,7 @@ class Crossing():
              
          return 0
     
-    def switch_traffic_light(self):
+    def switch_traffic_lights(self):
         for act_t_l in self.t_lights:
             act_t_l.switch_traffic_light()
         

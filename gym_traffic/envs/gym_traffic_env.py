@@ -20,50 +20,54 @@ class GymTrafficEnv(gym.Env):
     """
     def __init__(self):
         self.cnt = Controller(SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.display = Display(cnt)
+        self.display = Display(self.cnt)
         self.step_cnt = 0
         
     def setup(self):
         self.cnt.setup()
         self.display.setup()
         
+    def get_action_space(self):
+        """
+        Returns the action space length, that is used
+        as a boolean array to control the traffic lights
+        """
+        return len(self.cnt.crossings)
+    
     def step(self, action):
-        self.step_cnt += 1
-        
-        
-        #if render mode= human:
-        #   display.on_draw()
-        #   display.dispatch_events()
-        
         #action here
-        
-        
+        for i,a in enumerate(action):
+            if a: # is 1 or true, then SWITCH the current status
+                self.cnt.crossings[i].switch_traffic_lights()
         
         # update
         self.cnt.step()
-        
-        #render to screen and flip frame buffers
-        #display.update(10)
-        self.display.on_draw()
-        self.display.dispatch_events()
+        self.step_cnt += 1
         
         # return values
         done = False
-        if self.step_cnt >= 100
+        if self.step_cnt >= 100:
             done = True
         obs = self._get_observation_space()
         reward = self._get_reward()
-        info = 0
-
+        info = 0 # for now without information
         return obs, reward, done, info
         
     def render(self, mode='human'):
         print("render")
+        self.display.on_draw()
+        self.display.dispatch_events()
+        
+    def reset(self):
+        self.step_cnt = 0
+        # TODO: Implement those
+        # self.cnt.reset()
+        # self.display.reset()
         
     def _get_reward(self):
-    """
+        """
         Description:
-    """
+        """
         print("reward")
         standing_veh_count = self.cnt.get_standing_car_count()
         neg_rew_per_veh = -0.33

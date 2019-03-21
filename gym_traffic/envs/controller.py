@@ -129,10 +129,11 @@ class Controller():
         # change traffic lights
         if random.random()>0.97:
             cros = np.random.choice(self.crossings)
-            cros.switch_traffic_light()
+            cros.switch_traffic_lights()
             
     def get_standing_car_count(self):
         cnt = 0
         for veh in self.vehicles:
             if veh.last_moved_dist == 0:
                 cnt+=1
+        return cnt
