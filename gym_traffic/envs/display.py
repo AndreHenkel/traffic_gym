@@ -15,15 +15,6 @@ pyglet.options['debug_gl'] = False
 from gym_traffic.envs.controller import Controller
 from gym_traffic.envs.utils import dist
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
-STREET_WIDTH_MULTI = 10
-
-
-CAR_ICON_FILE = "img/car1.png"
-ICON_COMPRESSION = 0.1
-
 class Display(pyglet.window.Window):
     """ Main application class. """
 
@@ -36,7 +27,7 @@ class Display(pyglet.window.Window):
             
         """
         #super().__init__(cnt.width, cnt.height)
-        super(Display, self).__init__(SCREEN_WIDTH, SCREEN_HEIGHT, resizable=False, fullscreen=False, caption="Display")
+        super(Display, self).__init__(cnt.width,cnt.height, resizable=False, fullscreen=False, caption="Display")
         self.cnt = cnt
         
 
@@ -52,7 +43,6 @@ class Display(pyglet.window.Window):
     def on_draw(self):
         """ Render the screen. """
         self.clear()
-        arcade.start_render()
         # draw all streets
         for street in self.cnt.streets:
             arcade.draw_line(street.street_pos.x1, street.street_pos.y1,street.street_pos.x2, street.street_pos.y2, arcade.color.WOOD_BROWN, 80)#street.street_width*STREET_WIDTH_MULTI)
@@ -67,26 +57,14 @@ class Display(pyglet.window.Window):
         
         # draw all vehicles
         self.veh_draw()
-        self.flip()
-        #arcade.finish_render()
-        #print(self._projection) #test if it works
-
-
-    def draw(self):
-    #clear screen
-        self.clear()
-
-    #draw frames per second
-        self.fps_display.draw()
-        arcade.draw_line(10,10,100,100,arcade.color.WOOD_BROWN,80)
-    #flip frame buffer
+        # render
         self.flip()
 
     def on_mouse_press(self, x, y, button, modifiers):
         for c in self.cnt.crossings:
             pos = {"x":x,"y":y}
             if dist(self,pos,c.pos) < 10:
-                c.switch_traffic_light()
+                c.switch_traffic_lights()
                 return
 
     def on_key_press(self,symbol,modifiers):

@@ -4,9 +4,10 @@ It consists of parameters that give information about the vehicles condition, it
 """
 import arcade
 import random 
+import os
 
 # Parameters
-CAR_ICON_FILE = "img/car1.png"
+CAR_ICON_FILE = os.path.dirname(os.path.realpath(__file__))+"/img/car1.png"
 ICON_COMPRESSION = 0.1
 DIST_TO_TURN = 15
 DIST_TO_NEXT_CAR = 30
@@ -22,6 +23,8 @@ class Vehicle():
         self.street = street
     
         self.arcade = arcade.Sprite(CAR_ICON_FILE, ICON_COMPRESSION)
+        self.arcade.center_x = self.pos["x"] # Starting position
+        self.arcade.center_y = self.pos["y"]
         self.arcade.angle += facing_degree
         # attributes
         self.max_speed_up = 6 #m/s²
@@ -32,6 +35,8 @@ class Vehicle():
         
         # waits a bit until the next crossing is checked
         self.crossed = 1
+        
+        self.street.vehicles.append(self)
         
     def info(self):
         print("pos: {}".format(self.pos))

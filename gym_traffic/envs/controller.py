@@ -21,7 +21,6 @@ STREET_IT = 5 # Street iterations
 VEHICLES_AMOUNT = 20
 STREET_WIDTH = 10
 Street_Pos = collections.namedtuple('Street_Pos', 'x1 y1 x2 y2')
-CAR_ICON_FILE = "img/car1.png"
 ICON_COMPRESSION = 0.1
 
 
@@ -99,11 +98,6 @@ class Controller():
         for i in range(0,VEHICLES_AMOUNT):
             crt_street = np.random.choice(self.streets)
             veh = self.generate_vehicle(crt_street)
-            veh.arcade = arcade.Sprite(CAR_ICON_FILE, ICON_COMPRESSION)
-            veh.arcade.center_x = veh.pos["x"] # Starting position
-            veh.arcade.center_y = veh.pos["y"]
-            veh.arcade.angle+= veh.facing_degree
-            veh.street.vehicles.append(veh)
             self.vehicles.append(veh)
             
     def generate_vehicle(self, vehs_street):
@@ -122,14 +116,14 @@ class Controller():
                 veh.street.remove_vehicle(veh.licNr)
                 self.vehicles.remove(veh)
                 
-        if len(self.vehicles)<20: #random.random() > 10.99:
+        if len(self.vehicles)<VEHICLES_AMOUNT:
             gen_veh=self.generate_vehicle(np.random.choice(self.streets))
             self.vehicles.append(gen_veh)
 
         # change traffic lights
-        if random.random()>0.97:
-            cros = np.random.choice(self.crossings)
-            cros.switch_traffic_lights()
+        #if random.random()>0.97:
+         #   cros = np.random.choice(self.crossings)
+          #  cros.switch_traffic_lights()
             
     def get_standing_car_count(self):
         cnt = 0
