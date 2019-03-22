@@ -11,19 +11,19 @@ import random
 import time
 from threading import Thread
 
-from street import Street
-from vehicle import Vehicle
-from crossing import Crossing
+#own
+from gym_traffic.envs.street import Street
+from gym_traffic.envs.vehicle import Vehicle
+from gym_traffic.envs.crossing import Crossing
 
+# parameters
 STREET_IT = 5 # Street iterations
 VEHICLES_AMOUNT = 20
-
 STREET_WIDTH = 10
-
 Street_Pos = collections.namedtuple('Street_Pos', 'x1 y1 x2 y2')
-
 CAR_ICON_FILE = "img/car1.png"
 ICON_COMPRESSION = 0.1
+
 
 class Controller():
     def __init__(self,width, height):

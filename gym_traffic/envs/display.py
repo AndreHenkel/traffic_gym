@@ -4,14 +4,16 @@ This class will give the user the possibility to watch the traffic with a graphi
 
 import arcade
 import numpy as np
-from controller import Controller
 import random
-from utils import dist
 import pyglet
 from pyglet import clock
 from pyglet.window import key
 from pyglet.gl import *
 pyglet.options['debug_gl'] = False
+
+# own classes
+from gym_traffic.envs.controller import Controller
+from gym_traffic.envs.utils import dist
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600

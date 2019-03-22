@@ -3,12 +3,10 @@
 """
 
 # Own classes
-from controller import Controller
-from display import Display
+from gym_traffic.envs.controller import Controller
+from gym_traffic.envs.display import Display
 
-# python library
 import gym
-
 
 # Parameters
 SCREEN_WIDTH = 800
@@ -54,7 +52,6 @@ class GymTrafficEnv(gym.Env):
         return obs, reward, done, info
         
     def render(self, mode='human'):
-        print("render")
         self.display.on_draw()
         self.display.dispatch_events()
         
@@ -66,9 +63,8 @@ class GymTrafficEnv(gym.Env):
         
     def _get_reward(self):
         """
-        Description:
+        Currently returns -0.33 times the amount of standing cars
         """
-        print("reward")
         standing_veh_count = self.cnt.get_standing_car_count()
         neg_rew_per_veh = -0.33
         reward = standing_veh_count * neg_rew_per_veh
@@ -79,7 +75,6 @@ class GymTrafficEnv(gym.Env):
         """
             Description: Status of all traffic lights, and status about the affected vehicles by each traffic light
         """
-        print("observation")
         obs = []
         for cros in self.cnt.crossings:
             for tl in cros.t_lights:

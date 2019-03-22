@@ -5,6 +5,7 @@ It consists of parameters that give information about the vehicles condition, it
 import arcade
 import random 
 
+# Parameters
 CAR_ICON_FILE = "img/car1.png"
 ICON_COMPRESSION = 0.1
 DIST_TO_TURN = 15

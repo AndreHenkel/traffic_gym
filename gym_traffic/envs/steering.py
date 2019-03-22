@@ -3,9 +3,9 @@
     For now it will be held very simple and randomized, but later it can be programmed to follow an aim, like to get to another ending of the environment.
 """
 
-from vehicle.py import Vehicle
-from street.py import Street
-from crossing.py import Crossing
+from gym_traffic.envs.vehicle import Vehicle
+from gym_traffic.envs.street import Street
+from gym_traffic.envs.crossing import Crossing
 
 
 class Steering():

@@ -4,7 +4,8 @@ It will have attributes, such as how fast it can switch the traffic light.
 """
 import numpy as np
 
-from traffic_light import TrafficLight
+# own
+from gym_traffic.envs.traffic_light import TrafficLight
 
 class Crossing():
     def __init__(self, pos, streets):

@@ -5,9 +5,10 @@ This class is intended to keep information about a street. I.e. which vehicles a
 import random
 import math
 
-from utils import in_bet
+# own classes
+from gym_traffic.envs.utils import in_bet
 
-
+# Parameters
 OFFSET = 10
 MAX_CROSSING_VIEW_DIST = 400
 

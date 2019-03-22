@@ -1,13 +1,8 @@
 
-from gym_traffic_env import GymTrafficEnv
+import gym_traffic
 
 import time
+import gym
 
-g = GymTrafficEnv()
+gym.make('GymTraffic-v0')
 
-g.setup()
-
-while True:
-    time.sleep(1)
-    g.step([False,True,False,True,False,True,False,True,False,True,False,True])
-    g.render()
