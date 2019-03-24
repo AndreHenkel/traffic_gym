@@ -66,8 +66,10 @@ class GymTrafficEnv(gym.Env):
         Currently returns -0.33 times the amount of standing cars
         """
         standing_veh_count = self.cnt.get_standing_car_count()
+        driving_veh_count = self.cnt.get_driving_car_count()
+        pos_rew_per_veh = 0.1
         neg_rew_per_veh = -0.33
-        reward = standing_veh_count * neg_rew_per_veh
+        reward = standing_veh_count * neg_rew_per_veh + driving_veh_count * pos_rew_per_veh
         return reward
     
 
@@ -78,7 +80,7 @@ class GymTrafficEnv(gym.Env):
         obs = []
         for cros in self.cnt.crossings:
             for tl in cros.t_lights:
-                obs.append(tl)
+                obs.append(tl.activated)
                 obs.append(tl.affecting_veh)
         return obs
         
