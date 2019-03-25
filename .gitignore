@@ -1,2 +1,4 @@
 .idea/
 gym_traffic/envs/__pycache__/
+gym_traffic/__pycache__/
+gym_traffic.egg-info/
