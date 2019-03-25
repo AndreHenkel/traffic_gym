@@ -32,10 +32,10 @@ class Vehicle():
     
         self.next_crossing = 0
         self.last_moved_dist = 0
+        self.mvmt_speed = random.uniform(0.5,2.5) # create differently fast cars
         
         # waits a bit until the next crossing is checked
         self.crossed = 1
-        
         self.street.vehicles.append(self)
         
     def info(self):
@@ -82,7 +82,7 @@ class Vehicle():
         return crnt_dist
 
     def drive(self):
-        dx,dy = self.street.move(0,1,self.direction)
+        dx,dy = self.street.move(0,self.mvmt_speed,self.direction)
         if self.next_crossing:
             if self.dist(self.get_new_pos(dx,dy), self.next_crossing.pos) < DIST_TO_TURN:
                 if self.next_crossing.get_my_traffic_light(self.street,self.direction).activated:
