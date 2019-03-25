@@ -36,9 +36,8 @@ and their velocity is too high just brake (really hard) and will just stop if so
 For the structure of this program is intended to fit the OpenAI - Gym definition to be simply compatible to that format and that it can be reused by others.
 
 # Score
-    * For each vehicle that stands the agent will receive an reward of -0.03
-    * For each vehicle, that will leave the environment (driving out of the scope) the agent will receive a reward of +1
-    * For each vehicle that is within the scope, the agent will receive an reward of -0.01
+    * For each vehicle that stands the agent will receive an reward of -0.33 per time step
+    * For each vehicle that moves, the agent will receive an reward of +0.10 per time step
     
 # Action Space
 The action space will consist of N variables with each time either +1 for changing the lightning, or 0 for doing nothing.
@@ -50,17 +49,21 @@ The Observation Space will have following information:
   * The amount of cars directly affected by each traffic light
 
 # Architecture
-The program will have following classes
+The program is constructed as following
 ## Vehicle
 That stores information about the vehicle
 ## Street
 Information about the street, which vehicles are on it and where the crossings are located.
 ## Controller
 This class controls the movements of the cars, so that they brake, move and wait at a turn if they are cannot turn right now.
-
-TODO: Still unclear where and how to implement the lightnings
+## Display
+Responsible to display the current state, also takes in mouse and keyboard events
+## Crossing
+Is the joint between streets and holds traffic lights
+## Traffic Lights
+Store information about the position, the current state and the cars, that are "watching/affected by" it.
 
 
 # Movements
-The vehicles will randomly turn, but only a certain amount of times, to avoid that they can be in the environment forever.
+The vehicles will randomly turn.
 
