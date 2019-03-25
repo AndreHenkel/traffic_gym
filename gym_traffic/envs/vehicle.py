@@ -7,7 +7,7 @@ import random
 import os
 
 # Parameters
-CAR_ICON_FILE = os.path.dirname(os.path.realpath(__file__))+"/img/car1.png"
+CAR_ICON_FILE = os.path.dirname(os.path.realpath(__file__))+"/img/car_w_rights.png" #My own 'creation', since it is the easiest way to upload it legally
 ICON_COMPRESSION = 0.1
 DIST_TO_TURN = 15
 DIST_TO_NEXT_CAR = 30
