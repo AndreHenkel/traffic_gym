@@ -105,7 +105,7 @@ class Controller():
         return Vehicle({"x":veh_x, "y":veh_y}, 0, 0.2, randint(0,10000), veh_dir,vehs_street, fac_deg)
         
 
-    def step(self):
+    def step(self, passed_time):
         for veh in self.vehicles:
             #let vehicles drive
             veh.drive()

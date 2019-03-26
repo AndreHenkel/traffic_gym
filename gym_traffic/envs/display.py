@@ -26,7 +26,6 @@ class Display(pyglet.window.Window):
             they will be transformed then to sprites and displayed
             
         """
-        #super().__init__(cnt.width, cnt.height)
         super(Display, self).__init__(cnt.width,cnt.height, resizable=False, fullscreen=False, caption="Display")
         self.cnt = cnt
         
@@ -76,5 +75,5 @@ class Display(pyglet.window.Window):
             For an first easy implementation, all vehicles from control will be sent here and drawn as sprites.  
             Those sprites will be identified through the unique "registration plate number" on each vehicle.
         """
-        self.cnt.step()
+        self.cnt.step(delta_time)
 

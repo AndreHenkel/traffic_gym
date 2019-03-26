@@ -39,12 +39,12 @@ class GymTrafficEnv(gym.Env):
                 self.cnt.crossings[i].switch_traffic_lights()
         
         # update
-        self.cnt.step()
+        self.cnt.step(0)
         self.step_cnt += 1
         
         # return values
         done = False
-        if self.step_cnt >= 100:
+        if self.step_cnt >= 1000:
             done = True
         obs = self._get_observation_space()
         reward = self._get_reward()
@@ -56,7 +56,11 @@ class GymTrafficEnv(gym.Env):
         self.display.dispatch_events()
         
     def reset(self):
+        """
+            Resets the environment and returns the current observation space afterwards.
+        """
         self.step_cnt = 0
+        return _get_observation_space()
         # TODO: Implement those
         # self.cnt.reset()
         # self.display.reset()

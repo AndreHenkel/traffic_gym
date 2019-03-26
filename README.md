@@ -1,26 +1,32 @@
 This branch will continue with cleaning up the code and making it to an openai gym
 I will leave the other branch for now, because it can be used as a little playing game :)
 
-
 # Setup
 
 Use Python3.4 or newer.
-Have an python environment with following packages installed:
+Make yourself a new virtual python environment. Preferably with anaconda.
+Activate the virtual python environment.
+Download this repository with git.
+Go into the repository, where the 'setup.py' file is and execute:
+	$ python3 setup.py
+
+Now the gym_traffic environment is installed in your 'site-packages' folder.
+
+You can now create a new python file and try it like:
 
 
-keyboard
-pytorch
-tensorboardX
-matplotlib
-numpy
-arcade
+import gym
+import gym_traffic
 
-You can install them via pip.
-Currently not all packages are actuall used, but they probably will.
-NOTE: You have to put an icon with a car into the "envs/img/" folder named "car1.png" so that the simulation can take this image to show the traffic.
-Because I don't have the rights on the png image I use, I cannot upload it.
-Afterwards you can go to "gym_traffic/gym_traffic/envs" and there use your installed python to start the "start_sim.py" script
+env = gym.make("GymTraffic-v0")
+env.setup(()
+while(True)
+	env.step([False])
+	env.render()
 
+# really simple program, just to see if it is working for you.
+# Note: you have to activate your virtual python environment for it.
+	
 
 Following section is an idea and is not yet completely implemented.
 ---------------------------------------------------------------------

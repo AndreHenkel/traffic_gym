@@ -1,5 +1,5 @@
 """
-This class is intended to keep information about a street. I.e. which vehicles are on it, at what positions the crossings are.
+This class is intended to keep information about a street. 
 """
 
 import random

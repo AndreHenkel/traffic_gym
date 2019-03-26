@@ -20,7 +20,6 @@ class Crossing():
          for act_t_l in self.t_lights:
              if act_t_l.street.street_name == street.street_name and act_t_l.direction == direction:
                  return act_t_l
-             
          return 0
     
     def switch_traffic_lights(self):

@@ -1,5 +1,5 @@
 """
-    Description: lalala
+    This class stores information about traffic lights, and administers them
 """
 
 class TrafficLight():
