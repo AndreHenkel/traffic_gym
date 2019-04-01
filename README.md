@@ -25,10 +25,10 @@ import gym
 import gym_traffic
 
 env = gym.make("GymTraffic-v0")
-env.setup(()
-while(True)
-	env.step([False])
-	env.render()
+env.setup()
+while(True):
+    env.step([False])
+    env.render()
 ```
 
 A really simple program, just to see if it is working for you.
