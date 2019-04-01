@@ -20,6 +20,7 @@ Go into the repository, where the 'setup.py' file is and execute:
 Now the gym_traffic environment is installed in your 'site-packages' folder in your environment
 You can now create a new python file and try it like:
 
+```python
 import gym
 import gym_traffic
 
@@ -28,6 +29,7 @@ env.setup(()
 while(True)
 	env.step([False])
 	env.render()
+```
 
 A really simple program, just to see if it is working for you.
 Note: you have to activate your virtual python environment for it.
