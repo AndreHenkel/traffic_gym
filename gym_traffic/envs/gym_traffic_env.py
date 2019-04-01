@@ -12,6 +12,8 @@ import gym
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+MAX_EPISODE_STEPS = 100
+
 class GymTrafficEnv(gym.Env):
     """
         Description: ...
@@ -34,17 +36,19 @@ class GymTrafficEnv(gym.Env):
     
     def step(self, action):
         #action here
-        for i,a in enumerate(action):
-            if a: # is 1 or true, then SWITCH the current status
-                self.cnt.crossings[i].switch_traffic_lights()
-        
+        #for i,a in enumerate(action):
+        #    if a: # is 1 or true, then SWITCH the current status
+        #        self.cnt.crossings[i].switch_traffic_lights()
+        # for now only one action per time, due to it being easier for the beginning
+        self.cnt.crossings[action].switch_traffic_lights()
+
         # update
         self.cnt.step(0)
         self.step_cnt += 1
         
         # return values
         done = False
-        if self.step_cnt >= 1000:
+        if self.step_cnt >= MAX_EPISODE_STEPS:
             done = True
         obs = self._get_observation_space()
         reward = self._get_reward()
@@ -60,7 +64,7 @@ class GymTrafficEnv(gym.Env):
             Resets the environment and returns the current observation space afterwards.
         """
         self.step_cnt = 0
-        return _get_observation_space()
+        return self._get_observation_space()
         # TODO: Implement those
         # self.cnt.reset()
         # self.display.reset()
@@ -84,7 +88,6 @@ class GymTrafficEnv(gym.Env):
         obs = []
         for cros in self.cnt.crossings:
             for tl in cros.t_lights:
-                obs.append(tl.activated)
+                obs.append(1 if tl.activated else 0)
                 obs.append(tl.affecting_veh)
         return obs
-        
