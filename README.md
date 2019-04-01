@@ -27,7 +27,7 @@ import gym_traffic
 env = gym.make("GymTraffic-v0")
 env.setup()
 while(True):
-    env.step([False])
+    env.step(1)
     env.render()
 ```
 
