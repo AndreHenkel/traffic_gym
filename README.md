@@ -3,17 +3,22 @@ I will leave the other branch for now, because it can be used as a little playin
 
 # Setup
 
-Use Python3.4 or newer.
+Use Python3.6 or newer.
 Make yourself a new virtual python environment. Preferably with anaconda.
-Activate the virtual python environment.
+Like:
+	$ conda create -n testenv python=3.6
+
+Activate the virtual python environment:
+	$ source activate testenv
+
 Download this repository with git.
+	
+
 Go into the repository, where the 'setup.py' file is and execute:
-	$ python3 setup.py
+	$ pip install -e . 
 
-Now the gym_traffic environment is installed in your 'site-packages' folder.
-
+Now the gym_traffic environment is installed in your 'site-packages' folder in your environment
 You can now create a new python file and try it like:
-
 
 import gym
 import gym_traffic
@@ -24,8 +29,8 @@ while(True)
 	env.step([False])
 	env.render()
 
-# really simple program, just to see if it is working for you.
-# Note: you have to activate your virtual python environment for it.
+A really simple program, just to see if it is working for you.
+Note: you have to activate your virtual python environment for it.
 	
 
 Following section is an idea and is not yet completely implemented.
