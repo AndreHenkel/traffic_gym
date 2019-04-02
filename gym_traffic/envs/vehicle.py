@@ -10,7 +10,6 @@ import os
 CAR_ICON_FILE = os.path.dirname(os.path.realpath(__file__))+"/img/car_w_rights.png" #My own 'creation', since it is the easiest way to upload it legally
 ICON_COMPRESSION = 0.1
 DIST_TO_TURN = 15
-DIST_TO_NEXT_CAR = 30
 
 class Vehicle():
     def __init__(self, start_pos, start_velocity, length, licNr, direction, street, facing_degree):
@@ -29,6 +28,7 @@ class Vehicle():
         # attributes
         self.max_speed_up = random.uniform(0.01,0.05)
         self.max_speed_down = 20 #m/s²
+        self.dist_to_next_car = random.uniform(30,50)
     
         self.next_crossing = 0
         self.last_moved_dist = 0
@@ -104,17 +104,17 @@ class Vehicle():
                 else:
                     self.last_moved_dist = 0 # stand
                     self.move(0,0)
-            elif self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
+            elif self.street.is_free(self.pos, self.direction, self.dist_to_next_car, self.licNr):
                 self.move(dx,dy)
             else:
                 self.move(0,0)
-        elif self.crossed <= 0 and self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
+        elif self.crossed <= 0 and self.street.is_free(self.pos, self.direction, self.dist_to_next_car, self.licNr):
             self.next_crossing = self.street.get_next_crossing(self.pos, self.direction)
             if self.next_crossing:
                 self.next_crossing.get_my_traffic_light(self.street,self.direction).add_aff_veh()
             self.crossed = 3
             self.move(dx,dy)
-        elif self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
+        elif self.street.is_free(self.pos, self.direction, self.dist_to_next_car, self.licNr):
             self.crossed = self.crossed -1
             self.move(dx,dy)
         
