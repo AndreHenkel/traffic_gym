@@ -36,11 +36,11 @@ class GymTrafficEnv(gym.Env):
     
     def step(self, action):
         #action here
-        #for i,a in enumerate(action):
-        #    if a: # is 1 or true, then SWITCH the current status
-        #        self.cnt.crossings[i].switch_traffic_lights()
+        for i,a in enumerate(action):
+            if a: # is 1 or true, then SWITCH the current status
+                self.cnt.crossings[i].switch_traffic_lights()
         # for now only one action per time, due to it being easier for the beginning
-        self.cnt.crossings[action].switch_traffic_lights()
+        #self.cnt.crossings[action].switch_traffic_lights()
 
         # update
         self.cnt.step(0)

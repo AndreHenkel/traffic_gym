@@ -81,18 +81,14 @@ class Controller():
                 named_street_buffer["h"+str(hi)].add_crossing(cros)
                 self.crossings.append(cros)
                 
-                print("-----------")
-                print(named_street_buffer["v"+str(vi)].street_pos)
-                print(named_street_buffer["h"+str(hi)].street_pos)
-                named_street_buffer["v"+str(vi)].info()
-                named_street_buffer["h"+str(hi)].info()
-                print("-----------")
+                #print("-----------")
+                #print(named_street_buffer["v"+str(vi)].street_pos)
+                #print(named_street_buffer["h"+str(hi)].street_pos)
+                #named_street_buffer["v"+str(vi)].info()
+                #named_street_buffer["h"+str(hi)].info()
+                #print("-----------")
                 
         self.streets = list(named_street_buffer.values())
-        # then put everything into streets again
-
-     #   while True:
-      #      a  = 0
 
     def generate_vehicles(self):
         for i in range(0,VEHICLES_AMOUNT):
@@ -119,11 +115,6 @@ class Controller():
         if len(self.vehicles)<VEHICLES_AMOUNT:
             gen_veh=self.generate_vehicle(np.random.choice(self.streets))
             self.vehicles.append(gen_veh)
-
-        # change traffic lights
-        #if random.random()>0.97:
-         #   cros = np.random.choice(self.crossings)
-          #  cros.switch_traffic_lights()
             
     def get_standing_car_count(self):
         cnt = 0

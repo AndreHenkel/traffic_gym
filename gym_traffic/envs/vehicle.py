@@ -27,12 +27,13 @@ class Vehicle():
         self.arcade.center_y = self.pos["y"]
         self.arcade.angle += facing_degree
         # attributes
-        self.max_speed_up = 6 #m/s²
+        self.max_speed_up = random.uniform(0.01,0.05)
         self.max_speed_down = 20 #m/s²
     
         self.next_crossing = 0
         self.last_moved_dist = 0
-        self.mvmt_speed = random.uniform(0.5,2.5) # create differently fast cars
+        self.max_mvmt_speed = random.uniform(0.6,2.6) # create differently fast cars
+        self.crnt_mvmt_speed = 0
         
         # waits a bit until the next crossing is checked
         self.crossed = 1
@@ -51,6 +52,11 @@ class Vehicle():
         self.arcade.center_x=self.pos["x"]
         self.arcade.center_y=self.pos["y"]
         self.last_moved_dist = dx+dy # because one is usually zero anyway, and it matters more, if it changed at all
+        # speed up
+        if self.last_moved_dist == 0:
+            self.crnt_mvmt_speed = 0
+        if self.crnt_mvmt_speed <= self.max_mvmt_speed:
+            self.crnt_mvmt_speed += self.max_speed_up
         
         
     def set_pos(self,new_pos):
@@ -82,7 +88,7 @@ class Vehicle():
         return crnt_dist
 
     def drive(self):
-        dx,dy = self.street.move(0,self.mvmt_speed,self.direction)
+        dx,dy = self.street.move(0,self.crnt_mvmt_speed,self.direction)
         if self.next_crossing:
             if self.dist(self.get_new_pos(dx,dy), self.next_crossing.pos) < DIST_TO_TURN:
                 if self.next_crossing.get_my_traffic_light(self.street,self.direction).activated:
@@ -97,8 +103,11 @@ class Vehicle():
                     self.arcade.angle = self.street.get_facing_degree(self.pos, self.direction)
                 else:
                     self.last_moved_dist = 0 # stand
+                    self.move(0,0)
             elif self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
                 self.move(dx,dy)
+            else:
+                self.move(0,0)
         elif self.crossed <= 0 and self.street.is_free(self.pos, self.direction, DIST_TO_NEXT_CAR, self.licNr):
             self.next_crossing = self.street.get_next_crossing(self.pos, self.direction)
             if self.next_crossing:
