@@ -26,6 +26,10 @@ class Crossing():
         for act_t_l in self.t_lights:
             act_t_l.switch_traffic_light()
         
+    def time_tick(self):
+        for t_l in self.t_lights:
+            t_l.time_tick()
+        
     def generate_traffic_lights(self):
         dx,dy = self.streets[0].get_offset(1)
         dx1,dy1 = self.streets[0].move(self.pos, 10, 1)

@@ -102,6 +102,8 @@ class Controller():
         
 
     def step(self, passed_time):
+        self._time_tick() # for now let's the traff
+        
         for veh in self.vehicles:
             #let vehicles drive
             veh.drive()
@@ -111,7 +113,8 @@ class Controller():
             elif veh.pos["y"] <0 or veh.pos["y"]>self.height:
                 veh.street.remove_vehicle(veh.licNr)
                 self.vehicles.remove(veh)
-                
+        
+        # keep total vehicles the same
         if len(self.vehicles)<VEHICLES_AMOUNT:
             gen_veh=self.generate_vehicle(np.random.choice(self.streets))
             self.vehicles.append(gen_veh)
@@ -128,3 +131,7 @@ class Controller():
         for veh in self.vehicles:
             cnt += veh.last_moved_dist
         return cnt
+    
+    def _time_tick(self):
+        for c in self.crossings:
+            c.time_tick()
