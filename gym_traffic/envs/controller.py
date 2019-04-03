@@ -123,9 +123,8 @@ class Controller():
                 cnt+=1
         return cnt
     
-    def get_driving_car_count(self):
+    def get_sum_of_driven_car_dist(self):
         cnt = 0
         for veh in self.vehicles:
-            if veh.last_moved_dist > 0:
-                cnt+=1
+            cnt += veh.last_moved_dist
         return cnt
