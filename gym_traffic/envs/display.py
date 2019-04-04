@@ -77,3 +77,8 @@ class Display(pyglet.window.Window):
         """
         self.cnt.step(delta_time)
 
+    def get_current_image(self):
+        data = ( GLubyte * (3*self.cnt.width*self.cnt.width) )(0)
+        glReadPixels(0,0,self.cnt.width,self.cnt.height,GL_RGB,GL_UNSIGNED_BYTE,data)
+        return bytearray(data)
+
