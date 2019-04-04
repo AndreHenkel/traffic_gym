@@ -23,10 +23,15 @@ class GymTrafficEnv(gym.Env):
         self.display = Display(self.cnt)
         self.step_cnt = 0
         self.sum_last_actions_taken = 0 # counts how many switch actions are taken
+        self.render = False
+        self.state_as_pixels = False
         
-    def setup(self):
+    def setup(self, render=False, state_as_pixels=False):
         self.cnt.setup()
-        self.display.setup()
+        self.render = render
+        self.state_as_pixels = state_as_pixels
+        if self.render:
+            self.display.setup()
         
     def get_action_space(self):
         """
@@ -48,16 +53,23 @@ class GymTrafficEnv(gym.Env):
         self.cnt.step(0)
         self.step_cnt += 1
         
+        if self.render:
+            self._render()
+        
         # return values
         done = False
         if self.step_cnt >= MAX_EPISODE_STEPS:
             done = True
-        obs = self._get_observation_space()
+        obs = 0
+        if self.state_as_pixels:
+            obs = self.display.get_current_image()
+        else:
+            obs = self._get_observation_space()
         reward = self._get_reward()
         info = 0 # for now without information
         return obs, reward, done, info
         
-    def render(self, mode='human'):
+    def _render(self):
         self.display.on_draw()
         self.display.dispatch_events()
         
@@ -66,7 +78,12 @@ class GymTrafficEnv(gym.Env):
             Resets the environment and returns the current observation space afterwards.
         """
         self.step_cnt = 0
-        return self._get_observation_space()
+        obs = 0
+        if self.state_as_pixels:
+            obs = self.display.get_current_image()
+        else:
+            obs = self._get_observation_space()
+        return obs
         # TODO: Implement those
         # self.cnt.reset()
         # self.display.reset()
