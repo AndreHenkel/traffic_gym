@@ -33,10 +33,6 @@ while(True):
 
 A really simple program, just to see if it is working for you.
 Note: you have to activate your virtual python environment for it.
-	
-
-Following section is an idea and is not yet completely implemented.
----------------------------------------------------------------------
 
 # Overview
 This project is intended to provide a very basic simulation of traffic with mutliple streets and crossings.
@@ -60,23 +56,3 @@ When the lightning was told to switch, the agent cannot manipulate it anymore un
 The Observation Space will have following information:
   * All traffic light statuses (boolean)
   * The amount of cars directly affected by each traffic light
-
-# Architecture
-The program is constructed as following
-## Vehicle
-That stores information about the vehicle
-## Street
-Information about the street, which vehicles are on it and where the crossings are located.
-## Controller
-This class controls the movements of the cars, so that they brake, move and wait at a turn if they are cannot turn right now.
-## Display
-Responsible to display the current state, also takes in mouse and keyboard events
-## Crossing
-Is the joint between streets and holds traffic lights
-## Traffic Lights
-Store information about the position, the current state and the cars, that are "watching/affected by" it.
-
-
-# Movements
-The vehicles will randomly turn.
-
