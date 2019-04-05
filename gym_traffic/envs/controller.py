@@ -32,6 +32,7 @@ class Controller():
 
         self.width = width
         self.height = height
+        self.switched_t_lights = 0
 
     def setup(self):
         self.generate_map()
@@ -102,7 +103,7 @@ class Controller():
         
 
     def step(self, passed_time):
-        self._time_tick() # for now let's the traff
+        self.switched_t_lights = self._time_tick() # for now let's the traff
         
         for veh in self.vehicles:
             #let vehicles drive
@@ -133,5 +134,7 @@ class Controller():
         return cnt
     
     def _time_tick(self):
+        cnt = 0
         for c in self.crossings:
-            c.time_tick()
+            cnt += c.time_tick()
+        return cnt

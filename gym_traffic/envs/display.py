@@ -78,7 +78,13 @@ class Display(pyglet.window.Window):
         self.cnt.step(delta_time)
 
     def get_current_image(self):
+        """
+            Initializes data with the appropriate size of the screen, taken by width and height.
+            Fill the data buffer with 3 unsigned bytes per pixel(rgb), then returns it as numpy array.
+            
+            @return: numpy array of screen as RGB format
+        """
         data = ( GLubyte * (3*self.cnt.width*self.cnt.width) )(0)
         glReadPixels(0,0,self.cnt.width,self.cnt.height,GL_RGB,GL_UNSIGNED_BYTE,data)
-        return bytearray(data)
+        return np.frombuffer(data,dtype=np.uint8)
 

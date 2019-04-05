@@ -22,7 +22,6 @@ class GymTrafficEnv(gym.Env):
         self.cnt = Controller(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.display = Display(self.cnt)
         self.step_cnt = 0
-        self.sum_last_actions_taken = 0 # counts how many switch actions are taken
         self.render = False
         self.state_as_pixels = False
         
@@ -44,7 +43,6 @@ class GymTrafficEnv(gym.Env):
         #action here
         for i,a in enumerate(action):
             if a: # is 1 or true, then SWITCH the current status
-                self.sum_last_actions_taken += 1
                 self.cnt.crossings[i].switch_traffic_lights()
         # for now only one action per time, due to it being easier for the beginning
         #self.cnt.crossings[action].switch_traffic_lights()
@@ -94,10 +92,10 @@ class GymTrafficEnv(gym.Env):
         """
         standing_veh_count = self.cnt.get_standing_car_count()
         driving_veh_count = self.cnt.get_sum_of_driven_car_dist()
-        pos_rew_for_sum_dist = 0.1
+        pos_rew_for_sum_dist = 0.3
         neg_rew_per_veh_standing = -0.1
         neg_rew_per_action = -0.1
-        reward = standing_veh_count * neg_rew_per_veh_standing + driving_veh_count * pos_rew_for_sum_dist + neg_rew_per_action * self.sum_last_actions_taken
+        reward = standing_veh_count * neg_rew_per_veh_standing + driving_veh_count * pos_rew_for_sum_dist + neg_rew_per_action * self.cnt.switched_t_lights
         return reward
     
 

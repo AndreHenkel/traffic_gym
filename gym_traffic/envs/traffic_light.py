@@ -29,13 +29,21 @@ class TrafficLight():
 
         
     def time_tick(self):
+        """
+            Returns 1, if the traffic light switched.
+            Otherwise 0
+        """
         if self.time_ticks > 0:
             self.time_ticks+=1
             
         if self.time_ticks >= TIME_TICKS_TO_SWITCH:
+            self.time_ticks = 0 # reset
             if self.activated:
                 self.activated = False
             else:
                 self.activated = True
-            self.time_ticks = 0 # reset
+            return 1
+        else:
+            return 0
+            
         

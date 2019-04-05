@@ -27,8 +27,10 @@ class Crossing():
             act_t_l.switch_traffic_light()
         
     def time_tick(self):
+        cnt = 0
         for t_l in self.t_lights:
-            t_l.time_tick()
+            cnt += t_l.time_tick()
+        return cnt
         
     def generate_traffic_lights(self):
         dx,dy = self.streets[0].get_offset(1)
