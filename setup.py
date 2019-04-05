@@ -7,7 +7,7 @@ setup(name='gym_traffic',
       },
       install_requires=['gym',
                         'pyglet>=1.4.0a1',
-                        'arcade',
+                        'arcade==1.3.7',
                         'keyboard',
                         'numpy',
                         'matplotlib'],  # And any other dependencies foo needs
