@@ -1,7 +1,7 @@
 """
 This class will give the user the possibility to watch the traffic with a graphical output.
 """
-
+from PIL import Image
 import arcade
 import numpy as np
 import random
@@ -84,7 +84,9 @@ class Display(pyglet.window.Window):
             
             @return: numpy array of screen as RGB format
         """
-        data = ( GLubyte * (3*self.cnt.width*self.cnt.width) )(0)
+        data = ( GLubyte * (3*self.cnt.width*self.cnt.height) )(0)
         glReadPixels(0,0,self.cnt.width,self.cnt.height,GL_RGB,GL_UNSIGNED_BYTE,data)
-        return np.frombuffer(data,dtype=np.uint8)
+        arr = np.frombuffer(bytearray(data),dtype=np.uint8)
+        arr = arr.reshape(self.cnt.width, self.cnt.height,3)
+        return np.flipud(arr)
 

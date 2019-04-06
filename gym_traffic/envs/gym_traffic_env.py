@@ -9,8 +9,8 @@ from gym_traffic.envs.display import Display
 import gym
 
 # Parameters
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 400
+SCREEN_HEIGHT = 400
 
 MAX_EPISODE_STEPS = 100
 
