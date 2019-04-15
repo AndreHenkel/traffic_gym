@@ -92,15 +92,21 @@ class Vehicle():
         if self.next_crossing:
             if self.dist(self.get_new_pos(dx,dy), self.next_crossing.pos) < DIST_TO_TURN:
                 if self.next_crossing.get_my_traffic_light(self.street,self.direction).activated:
-                    self.next_crossing.get_my_traffic_light(self.street,self.direction).rm_aff_veh()
-                    self.street.remove_vehicle(self.licNr)
-                    self.street = random.choice(self.next_crossing.streets)
-                    self.street.vehicles.append(self)
-                    self.set_pos(self.next_crossing.pos)
-                    dx_offset, dy_offset = self.street.get_offset(self.direction)
-                    self.move(dx_offset, dy_offset)
-                    self.next_crossing = 0
-                    self.arcade.angle = self.street.get_facing_degree(self.pos, self.direction)
+                    b_street = random.choice(self.next_crossing.streets)
+                    dx_offset, dy_offset = b_street.get_offset(self.direction)
+                    if b_street.is_free({"x": self.next_crossing.pos["x"]+dx_offset, "y": self.next_crossing.pos["y"]+dy_offset},self.direction,self.dist_to_next_car,self.licNr):
+                        self.next_crossing.get_my_traffic_light(self.street,self.direction).rm_aff_veh()
+                        self.street.remove_vehicle(self.licNr)
+                        self.street = b_street
+                        self.street.vehicles.append(self)
+                        self.set_pos(self.next_crossing.pos)
+                        dx_offset, dy_offset = self.street.get_offset(self.direction)
+                        self.move(dx_offset, dy_offset)
+                        self.next_crossing = 0
+                        self.arcade.angle = self.street.get_facing_degree(self.pos, self.direction)
+                    else:
+                        self.last_moved_dist = 0 # stand
+                        self.move(0,0)
                 else:
                     self.last_moved_dist = 0 # stand
                     self.move(0,0)
