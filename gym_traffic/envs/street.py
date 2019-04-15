@@ -102,7 +102,7 @@ class Street():
   
     def random_pos(self):
         """ 
-        Returns a random position on the street including direction
+        Returns a random position on the street including direction and facing degree
         """
         x=random.randint(self.street_pos.x1,self.street_pos.x2)
         y=random.randint(self.street_pos.y1, self.street_pos.y2)
@@ -114,7 +114,22 @@ class Street():
 
         # turns around if direction is positiv
         facing_degree = self.street_degree - 90*direction -90
+        return x, y, direction, facing_degree
+    
+    def random_pos_at_side(self):
+        """ 
+        Returns a random position at the side of the street including direction and facing degree
+        """
+        x=random.choice([self.street_pos.x1,self.street_pos.x2])
+        y=random.choice([self.street_pos.y1, self.street_pos.y2])
+        direction = 1 if random.random() < 0.5 else -1
         
+        dx_offset,dy_offset = self.get_offset(direction)
+        x+=dx_offset
+        y+=dy_offset
+
+        # turns around if direction is positiv
+        facing_degree = self.street_degree - 90*direction -90
         return x, y, direction, facing_degree
         
     def get_offset(self, direction):

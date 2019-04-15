@@ -98,7 +98,7 @@ class Controller():
             self.vehicles.append(veh)
             
     def generate_vehicle(self, vehs_street):
-        veh_x, veh_y, veh_dir, fac_deg = vehs_street.random_pos()
+        veh_x, veh_y, veh_dir, fac_deg = vehs_street.random_pos_at_side()
         return Vehicle({"x":veh_x, "y":veh_y}, 0, 0.2, randint(0,10000), veh_dir,vehs_street, fac_deg)
         
 
