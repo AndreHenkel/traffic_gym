@@ -9,23 +9,27 @@ from gym_traffic.envs.display import Display
 import gym
 
 # Parameters
-SCREEN_WIDTH = 400
-SCREEN_HEIGHT = 400
-
 MAX_EPISODE_STEPS = 100
+
+# Rewards
+DISTANCE_REWARD = 0.01
+VEHICLE_STANDING_REWARD = -0.1
+ACTION_REWARD = -0.05
 
 class GymTrafficEnv(gym.Env):
     """
         Description: ...
     """
     def __init__(self):
-        self.cnt = Controller(SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.display = Display(self.cnt)
+        self.cnt = 0
+        self.display = 0
         self.step_cnt = 0
         self.render = False
         self.state_as_pixels = False
         
-    def setup(self, render=False, state_as_pixels=False):
+    def setup(self, render=False, state_as_pixels=False, screen_width=400, screen_height=400):
+        self.cnt = Controller(screen_width, screen_height)
+        self.display = Display(self.cnt)
         self.cnt.setup()
         self.render = render
         self.state_as_pixels = state_as_pixels
@@ -92,10 +96,7 @@ class GymTrafficEnv(gym.Env):
         """
         standing_veh_count = self.cnt.get_standing_car_count()
         driving_veh_count = self.cnt.get_sum_of_driven_car_dist()
-        pos_rew_for_sum_dist = 0.3
-        neg_rew_per_veh_standing = -0.1
-        neg_rew_per_action = -0.1
-        reward = standing_veh_count * neg_rew_per_veh_standing + driving_veh_count * pos_rew_for_sum_dist + neg_rew_per_action * self.cnt.switched_t_lights
+        reward = standing_veh_count * VEHICLE_STANDING_REWARD + driving_veh_count * DISTANCE_REWARD + ACTION_REWARD * self.cnt.switched_t_lights
         return reward
     
 

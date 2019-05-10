@@ -18,7 +18,7 @@ from gym_traffic.envs.crossing import Crossing
 
 # parameters
 STREET_IT = 5 # Street iterations
-VEHICLES_AMOUNT = 20
+VEHICLES_AMOUNT = 1
 STREET_WIDTH = 10
 Street_Pos = collections.namedtuple('Street_Pos', 'x1 y1 x2 y2')
 ICON_COMPRESSION = 0.1
@@ -94,11 +94,14 @@ class Controller():
     def generate_vehicles(self):
         for i in range(0,VEHICLES_AMOUNT):
             crt_street = np.random.choice(self.streets)
-            veh = self.generate_vehicle(crt_street)
+            veh = self.generate_vehicle(crt_street,False)
             self.vehicles.append(veh)
             
-    def generate_vehicle(self, vehs_street):
-        veh_x, veh_y, veh_dir, fac_deg = vehs_street.random_pos_at_side()
+    def generate_vehicle(self, vehs_street, at_side):#
+        if at_side:
+            veh_x, veh_y, veh_dir, fac_deg = vehs_street.random_pos_at_side()
+        else:
+            veh_x, veh_y, veh_dir, fac_deg = vehs_street.random_pos()
         return Vehicle({"x":veh_x, "y":veh_y}, 0, 0.2, randint(0,10000), veh_dir,vehs_street, fac_deg)
         
 
@@ -117,7 +120,7 @@ class Controller():
         
         # keep total vehicles the same
         if len(self.vehicles)<VEHICLES_AMOUNT:
-            gen_veh=self.generate_vehicle(np.random.choice(self.streets))
+            gen_veh=self.generate_vehicle(np.random.choice(self.streets),True)
             self.vehicles.append(gen_veh)
             
     def get_standing_car_count(self):
@@ -130,7 +133,7 @@ class Controller():
     def get_sum_of_driven_car_dist(self):
         cnt = 0
         for veh in self.vehicles:
-            cnt += veh.last_moved_dist
+            cnt += abs(veh.last_moved_dist)
         return cnt
     
     def _time_tick(self):

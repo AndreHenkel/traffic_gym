@@ -28,7 +28,7 @@ class Vehicle():
         # attributes
         self.max_speed_up = random.uniform(0.01,0.05)
         self.max_speed_down = 20 #m/s²
-        self.dist_to_next_car = random.uniform(30,50)
+        self.dist_to_next_car = random.uniform(30,40)
     
         self.next_crossing = 0
         self.last_moved_dist = 0
