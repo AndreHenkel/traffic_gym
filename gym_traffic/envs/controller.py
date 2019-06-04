@@ -18,18 +18,18 @@ from gym_traffic.envs.crossing import Crossing
 
 # parameters
 STREET_IT = 5 # Street iterations
-VEHICLES_AMOUNT = 1
 STREET_WIDTH = 10
 Street_Pos = collections.namedtuple('Street_Pos', 'x1 y1 x2 y2')
 ICON_COMPRESSION = 0.1
 
 
 class Controller():
-    def __init__(self,width, height):
+    def __init__(self,width, height, max_vehicles):
         self.streets = []
         self.vehicles = []
         self.crossings = []
 
+        self.max_vehicles = max_vehicles
         self.width = width
         self.height = height
         self.switched_t_lights = 0
@@ -92,7 +92,7 @@ class Controller():
         self.streets = list(named_street_buffer.values())
 
     def generate_vehicles(self):
-        for i in range(0,VEHICLES_AMOUNT):
+        for i in range(0,self.max_vehicles):
             crt_street = np.random.choice(self.streets)
             veh = self.generate_vehicle(crt_street,False)
             self.vehicles.append(veh)
@@ -119,9 +119,11 @@ class Controller():
                 self.vehicles.remove(veh)
         
         # keep total vehicles the same
-        if len(self.vehicles)<VEHICLES_AMOUNT:
-            gen_veh=self.generate_vehicle(np.random.choice(self.streets),True)
+        if len(self.vehicles)<self.max_vehicles:
+            gen_veh=self.generate_vehicle(np.random.choice(self.streets),False)
             self.vehicles.append(gen_veh)
+            return True #equals done
+        return False #equals not done yet
             
     def get_standing_car_count(self):
         cnt = 0
@@ -135,7 +137,18 @@ class Controller():
         for veh in self.vehicles:
             cnt += abs(veh.last_moved_dist)
         return cnt
-    
+ 
+    def reset(self):
+        # put vehicle randomly
+        crt_street = np.random.choice(self.streets)
+        veh = self.generate_vehicle(crt_street,False)
+        self.vehicles[0]=veh
+
+        # change traffic lights randomly
+        for cros in self.crossings:
+            if random.random()>0.5:
+                cros.switch_traffic_lights()
+
     def _time_tick(self):
         cnt = 0
         for c in self.crossings:

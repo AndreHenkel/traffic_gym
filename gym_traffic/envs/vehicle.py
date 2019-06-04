@@ -26,19 +26,23 @@ class Vehicle():
         self.arcade.center_y = self.pos["y"]
         self.arcade.angle += facing_degree
         # attributes
-        self.max_speed_up = random.uniform(0.01,0.05)
-        self.max_speed_down = 20 #m/s²
+        self.max_mvmt_speed = random.uniform(2.0,3.6) # create differently fast cars
+        self.max_speed_up = random.uniform(0.05,0.12)
+        self.max_speed_down = random.uniform(0.05,0.29)
         self.dist_to_next_car = random.uniform(30,40)
     
         self.next_crossing = 0
-        self.last_moved_dist = 0
-        self.max_mvmt_speed = random.uniform(0.6,2.6) # create differently fast cars
-        self.crnt_mvmt_speed = 0
+        self.last_moved_dist = 0.1 # for starting
+        self.crnt_mvmt_speed = 0.4 # for starting
         
         # waits a bit until the next crossing is checked
-        self.crossed = 1
+        self.crossed = 0
         self.street.vehicles.append(self)
         
+        # additional variables for easier training and experimentation
+        self.green_cross = False #Let's the controller know, that the traffic light is activated, when needed
+
+
     def info(self):
         print("pos: {}".format(self.pos))
         if self.next_crossing:
@@ -53,10 +57,12 @@ class Vehicle():
         self.arcade.center_y=self.pos["y"]
         self.last_moved_dist = dx+dy # because one is usually zero anyway, and it matters more, if it changed at all
         # speed up
-        if self.last_moved_dist == 0:
+        if self.last_moved_dist == 0: #threshold(?)
             self.crnt_mvmt_speed = 0
+        # always 'speeding' up, and resetting to zero if there is a halt...
         if self.crnt_mvmt_speed <= self.max_mvmt_speed:
-            self.crnt_mvmt_speed += self.max_speed_up
+            #self.crnt_mvmt_speed = self.max_mvmt_speed # TODO: Change later. Currently for easier training
+            self.crnt_mvmt_speed += self.max_speed_up 
         
         
     def set_pos(self,new_pos):
@@ -88,10 +94,12 @@ class Vehicle():
         return crnt_dist
 
     def drive(self):
+        self.green_cross = False
         dx,dy = self.street.move(0,self.crnt_mvmt_speed,self.direction)
         if self.next_crossing:
             if self.dist(self.get_new_pos(dx,dy), self.next_crossing.pos) < DIST_TO_TURN:
                 if self.next_crossing.get_my_traffic_light(self.street,self.direction).activated:
+                    self.green_cross = True
                     b_street = random.choice(self.next_crossing.streets)
                     dx_offset, dy_offset = b_street.get_offset(self.direction)
                     if b_street.is_free({"x": self.next_crossing.pos["x"]+dx_offset, "y": self.next_crossing.pos["y"]+dy_offset},self.direction,self.dist_to_next_car,self.licNr):
@@ -105,10 +113,8 @@ class Vehicle():
                         self.next_crossing = 0
                         self.arcade.angle = self.street.get_facing_degree(self.pos, self.direction)
                     else:
-                        self.last_moved_dist = 0 # stand
                         self.move(0,0)
                 else:
-                    self.last_moved_dist = 0 # stand
                     self.move(0,0)
             elif self.street.is_free(self.pos, self.direction, self.dist_to_next_car, self.licNr):
                 self.move(dx,dy)

@@ -3,6 +3,7 @@ This class represents the crossings and therefore the traffic lights on the stre
 It will have attributes, such as how fast it can switch the traffic light.
 """
 import numpy as np
+import random
 
 # own
 from gym_traffic.envs.traffic_light import TrafficLight
@@ -12,7 +13,10 @@ class Crossing():
         self.pos = pos # {x,y}
         self.streets = streets
         self.t_lights = self.generate_traffic_lights()
-    
+        self.status = 1
+        if random.random() > 0.5:
+            self.switch_traffic_lights()
+
     def get_traffic_lights(self):
         return self.t_lights
     
@@ -23,6 +27,11 @@ class Crossing():
          return 0
     
     def switch_traffic_lights(self):
+        if self.status == 1:
+            self.status = -1
+        else:
+            self.status = 1
+
         for act_t_l in self.t_lights:
             act_t_l.switch_traffic_light()
         
