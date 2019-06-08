@@ -94,7 +94,7 @@ class Controller():
     def generate_vehicles(self):
         for i in range(0,self.max_vehicles):
             crt_street = np.random.choice(self.streets)
-            veh = self.generate_vehicle(crt_street,False)
+            veh = self.generate_vehicle(crt_street,True)
             self.vehicles.append(veh)
             
     def generate_vehicle(self, vehs_street, at_side):#
@@ -117,13 +117,17 @@ class Controller():
             elif veh.pos["y"] <0 or veh.pos["y"]>self.height:
                 veh.street.remove_vehicle(veh.licNr)
                 self.vehicles.remove(veh)
-        
+
+        done=False
         # keep total vehicles the same
-        if len(self.vehicles)<self.max_vehicles:
-            gen_veh=self.generate_vehicle(np.random.choice(self.streets),False)
-            self.vehicles.append(gen_veh)
-            return True #equals done
-        return False #equals not done yet
+        #while len(self.vehicles)<self.max_vehicles:
+         #   gen_veh=self.generate_vehicle(np.random.choice(self.streets),False)
+          #  self.vehicles.append(gen_veh)
+           # done=True 
+        if len(self.vehicles)==0:
+            done=True
+
+        return done
             
     def get_standing_car_count(self):
         cnt = 0
@@ -139,10 +143,18 @@ class Controller():
         return cnt
  
     def reset(self):
+        #remove all vehicles from street
+        for s in self.streets:
+            s.vehicles=[]
+
+        #remove all vehicles
+        self.vehicles = []
+        
         # put vehicle randomly
-        crt_street = np.random.choice(self.streets)
-        veh = self.generate_vehicle(crt_street,False)
-        self.vehicles[0]=veh
+        for i in range(0,self.max_vehicles): 
+            crt_street = np.random.choice(self.streets)
+            veh = self.generate_vehicle(crt_street,True)
+            self.vehicles.append(veh)
 
         # change traffic lights randomly
         for cros in self.crossings:

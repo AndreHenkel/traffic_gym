@@ -124,6 +124,18 @@ class Street():
         y=random.choice([self.street_pos.y1, self.street_pos.y2])
         direction = 1 if random.random() < 0.5 else -1
         
+        if abs(self.street_degree) < 1:
+            if x < 50:
+                direction=-1
+            else:
+                direction=1
+        else:
+            if y < 50:
+                direction=-1
+            else:
+                direction=1
+
+
         dx_offset,dy_offset = self.get_offset(direction)
         x+=dx_offset
         y+=dy_offset

@@ -13,9 +13,9 @@ import numpy as np
 MAX_EPISODE_STEPS = 500
 
 # Rewards
-DISTANCE_REWARD = 0.01 #0.0001
-VEHICLE_STANDING_REWARD = -0.015 #-0.09
-ACTION_REWARD = 0.00 #-0.001 #-0.01
+DISTANCE_REWARD = 1 #0.0001
+VEHICLE_STANDING_REWARD = -2.3 #-0.09
+ACTION_REWARD = -0.0 #-0.001 #-0.01
 CROSSED_VEH_REWARD = 0.00 # 0.01
 
 class GymTrafficEnv(gym.Env):
@@ -31,8 +31,10 @@ class GymTrafficEnv(gym.Env):
         self.last_action = []
         self.screen_width = 400
         self.screen_height = 400
+        self.max_vehicles = 1
 
     def setup(self, render=False, state_as_pixels=False, screen_width=400, screen_height=400, max_vehicles=1):
+        self.max_vehicles=max_vehicles
         self.screen_widht = screen_width
         self.screen_height = screen_height
         self.cnt = Controller(screen_width, screen_height, max_vehicles)
@@ -109,7 +111,7 @@ class GymTrafficEnv(gym.Env):
         #    else:
          #       green_cross -= 1 # red light ahead, -> negative reward
 
-        reward = standing_veh_count * VEHICLE_STANDING_REWARD + driving_veh_count * DISTANCE_REWARD + np.sum(self.last_action) * ACTION_REWARD + green_cross * CROSSED_VEH_REWARD
+        reward = standing_veh_count * VEHICLE_STANDING_REWARD/self.max_vehicles + driving_veh_count * DISTANCE_REWARD/self.max_vehicles + np.sum(self.last_action) * ACTION_REWARD + green_cross * CROSSED_VEH_REWARD/self.max_vehicles
         return reward
     
 
@@ -120,16 +122,24 @@ class GymTrafficEnv(gym.Env):
         """
         obs = []
         for cros in self.cnt.crossings:
-            #for tl in cros.t_lights:
-             #   if tl.activated:
-              #      obs.append(+1.0)
-               # else:
-                #    obs.append(-1.0)
-            obs.append(cros.status)
+            for tl in cros.t_lights:
+                if tl.activated:
+                    obs.append(0.7)
+                else:
+                    obs.append(0.1)
+            #obs.append(cros.status)
         for veh in self.cnt.vehicles:
             obs.append(veh.pos["x"]/self.screen_width) # normalizing the input
             obs.append(veh.pos["y"]/self.screen_height) # normalizing the input
             obs.append(veh.crnt_mvmt_speed) # current speed
             obs.append(int(veh.direction)) # adds also where the car is going. 
+
+        for i in range(self.max_vehicles-len(self.cnt.vehicles)): #episode is done, when all vehicles left the area, therefore left vehicles must be replaces with 0 filled values
+            obs.append(0) # normalizing the input
+            obs.append(0) # normalizing the input
+            obs.append(0) # current speed
+            obs.append(0) # adds also where the car is going. 
+        
+
         obs = np.array(obs)
         return obs

@@ -6,6 +6,11 @@ import arcade
 import random 
 import os
 
+import logging
+
+logging.basicConfig(filename='example.log',level=logging.INFO,format='%(asctime)s %(message)s') 
+logger = logging.getLogger(__name__)
+
 # Parameters
 CAR_ICON_FILE = os.path.dirname(os.path.realpath(__file__))+"/img/car_w_rights.png" #My own 'creation', since it is the easiest way to upload it legally
 ICON_COMPRESSION = 0.1
@@ -26,14 +31,14 @@ class Vehicle():
         self.arcade.center_y = self.pos["y"]
         self.arcade.angle += facing_degree
         # attributes
-        self.max_mvmt_speed = random.uniform(2.0,3.6) # create differently fast cars
-        self.max_speed_up = random.uniform(0.05,0.12)
+        self.max_mvmt_speed = random.uniform(3.0,4.6) # create differently fast cars
+        self.max_speed_up = random.uniform(0.1,0.22)
         self.max_speed_down = random.uniform(0.05,0.29)
         self.dist_to_next_car = random.uniform(30,40)
     
         self.next_crossing = 0
         self.last_moved_dist = 0.1 # for starting
-        self.crnt_mvmt_speed = 0.4 # for starting
+        self.crnt_mvmt_speed = 0.1 # for starting
         
         # waits a bit until the next crossing is checked
         self.crossed = 0
@@ -96,13 +101,18 @@ class Vehicle():
     def drive(self):
         self.green_cross = False
         dx,dy = self.street.move(0,self.crnt_mvmt_speed,self.direction)
+        logger.debug("Moved distance: %s, %s",dx,dy)
         if self.next_crossing:
+            logger.debug("Knows next crossing")
             if self.dist(self.get_new_pos(dx,dy), self.next_crossing.pos) < DIST_TO_TURN:
+                logger.debug("Time to turn")
                 if self.next_crossing.get_my_traffic_light(self.street,self.direction).activated:
+                    logger.debug("Traffic light is green")
                     self.green_cross = True
                     b_street = random.choice(self.next_crossing.streets)
                     dx_offset, dy_offset = b_street.get_offset(self.direction)
                     if b_street.is_free({"x": self.next_crossing.pos["x"]+dx_offset, "y": self.next_crossing.pos["y"]+dy_offset},self.direction,self.dist_to_next_car,self.licNr):
+                        logger.debug("Next street is free")
                         self.next_crossing.get_my_traffic_light(self.street,self.direction).rm_aff_veh()
                         self.street.remove_vehicle(self.licNr)
                         self.street = b_street
@@ -113,22 +123,32 @@ class Vehicle():
                         self.next_crossing = 0
                         self.arcade.angle = self.street.get_facing_degree(self.pos, self.direction)
                     else:
+                        logger.debug("Next street is not free")
                         self.move(0,0)
                 else:
+                    logger.debug("Traffic light is red")
                     self.move(0,0)
             elif self.street.is_free(self.pos, self.direction, self.dist_to_next_car, self.licNr):
+                logger.debug("Street ahead is free")
                 self.move(dx,dy)
             else:
+                logger.debug("Street ahead is not free")    
                 self.move(0,0)
         elif self.crossed <= 0 and self.street.is_free(self.pos, self.direction, self.dist_to_next_car, self.licNr):
+            logger.debug("Not recently crossed and street is free")
             self.next_crossing = self.street.get_next_crossing(self.pos, self.direction)
             if self.next_crossing:
+                logger.debug("Found new crossing")
                 self.next_crossing.get_my_traffic_light(self.street,self.direction).add_aff_veh()
             self.crossed = 3
             self.move(dx,dy)
         elif self.street.is_free(self.pos, self.direction, self.dist_to_next_car, self.licNr):
+            logger.debug("Recently crossed and street is free")
             self.crossed = self.crossed -1
             self.move(dx,dy)
+        else:
+            logger.debug("No known crossing and street seems to be not free")
+            self.move(0,0)
         
     def draw(self):
         self.arcade.draw()
