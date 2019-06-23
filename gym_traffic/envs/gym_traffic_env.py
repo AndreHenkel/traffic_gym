@@ -9,14 +9,28 @@ from gym_traffic.envs.display import Display
 import gym
 import numpy as np
 
+import configparser, os
+
+
 # Parameters
 MAX_EPISODE_STEPS = 500
 
 # Rewards
-DISTANCE_REWARD = 1 #0.0001
-VEHICLE_STANDING_REWARD = -2.3 #-0.09
-ACTION_REWARD = -0.0 #-0.001 #-0.01
-CROSSED_VEH_REWARD = 0.00 # 0.01
+DISTANCE_REWARD = 4.7 #0.0001
+VEHICLE_STANDING_REWARD = -4.9 #-0.09
+ACTION_REWARD = -0.1 #-0.001 #-0.01
+JUST_LEFT_VEH_REWARD = 7.0 # 0.01
+
+directory = os.path.dirname(os.path.realpath(__file__))
+
+config = configparser.ConfigParser()
+config.readfp(open(directory+'/defaults.cfg'))
+
+DISTANCE_REWARD = float(config.get("REWARDS","DISTANCE_REWARD"))
+VEHICLE_STANDING_REWARD = float(config.get("REWARDS","VEHICLE_STANDING_REWARD"))
+ACTION_REWARD =float(config.get("REWARDS","ACTION_REWARD"))
+JUST_LEFT_VEH_REWARD = float(config.get("REWARDS","JUST_LEFT_VEH_REWARD"))
+
 
 class GymTrafficEnv(gym.Env):
     """
@@ -32,6 +46,7 @@ class GymTrafficEnv(gym.Env):
         self.screen_width = 400
         self.screen_height = 400
         self.max_vehicles = 1
+        self.just_left_veh = 0
 
     def setup(self, render=False, state_as_pixels=False, screen_width=400, screen_height=400, max_vehicles=1):
         self.max_vehicles=max_vehicles
@@ -63,9 +78,11 @@ class GymTrafficEnv(gym.Env):
         self.last_action = action
 
         # update
-        done = self.cnt.step(0)
+        done,left_veh = self.cnt.step(0)
         self.step_cnt += 1
-        
+        self.just_left_veh = left_veh
+
+
         if self.render:
             self._render()
         
@@ -104,14 +121,17 @@ class GymTrafficEnv(gym.Env):
         """
         standing_veh_count = self.cnt.get_standing_car_count()
         driving_veh_count = self.cnt.get_sum_of_driven_car_dist()
-        green_cross = 0
-        for veh in self.cnt.vehicles:
-            if veh.green_cross:
-                green_cross += 1
+        #for veh in self.cnt.vehicles:
+         #   if veh.green_cross:
+          #      green_cross += 1
         #    else:
          #       green_cross -= 1 # red light ahead, -> negative reward
-
-        reward = standing_veh_count * VEHICLE_STANDING_REWARD/self.max_vehicles + driving_veh_count * DISTANCE_REWARD/self.max_vehicles + np.sum(self.last_action) * ACTION_REWARD + green_cross * CROSSED_VEH_REWARD/self.max_vehicles
+        #nmbr_veh = len(self.cnt.vehicles)+1
+        
+        
+        nmbr_veh=1 #HOTFIX
+        reward = standing_veh_count * VEHICLE_STANDING_REWARD/nmbr_veh + driving_veh_count * DISTANCE_REWARD/nmbr_veh + np.sum(self.last_action) * ACTION_REWARD + self.just_left_veh * JUST_LEFT_VEH_REWARD/nmbr_veh
+        self.just_left_veh = 0
         return reward
     
 
@@ -122,12 +142,12 @@ class GymTrafficEnv(gym.Env):
         """
         obs = []
         for cros in self.cnt.crossings:
-            for tl in cros.t_lights:
-                if tl.activated:
-                    obs.append(0.7)
-                else:
-                    obs.append(0.1)
-            #obs.append(cros.status)
+            #for tl in cros.t_lights:
+             #   if tl.activated:
+              #      obs.append(0.7)
+               # else:
+                #    obs.append(0.1)
+            obs.append(cros.status/2)#divide by 2 to lessen the impact, since the x/y coordinates are already [0,1]
         for veh in self.cnt.vehicles:
             obs.append(veh.pos["x"]/self.screen_width) # normalizing the input
             obs.append(veh.pos["y"]/self.screen_height) # normalizing the input
