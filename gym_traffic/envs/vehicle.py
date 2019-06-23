@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 CAR_ICON_FILE = os.path.dirname(os.path.realpath(__file__))+"/img/car_w_rights.png" #My own 'creation', since it is the easiest way to upload it legally
 ICON_COMPRESSION = 0.1
 DIST_TO_TURN = 15
+DIST_TO_SLOW = 60
 
 class Vehicle():
     def __init__(self, start_pos, start_velocity, length, licNr, direction, street, facing_degree):
@@ -31,11 +32,12 @@ class Vehicle():
         self.arcade.center_y = self.pos["y"]
         self.arcade.angle += facing_degree
         # attributes
-        self.max_mvmt_speed = random.uniform(3.0,4.6) # create differently fast cars
+        self.max_mvmt_speed = random.uniform(2.0,3.6) # create differently fast cars
         self.max_speed_up = random.uniform(0.1,0.22)
-        self.max_speed_down = random.uniform(0.05,0.29)
+        self.max_speed_down = random.uniform(0.3,0.5)
         self.dist_to_next_car = random.uniform(30,40)
-    
+        self.min_speed_approach = 0.3
+
         self.next_crossing = 0
         self.last_moved_dist = 0.1 # for starting
         self.crnt_mvmt_speed = 0.1 # for starting
@@ -55,7 +57,7 @@ class Vehicle():
         else:
             print("next_crossing: IS NULL")
             
-    def move(self, dx,dy):
+    def move(self, dx,dy,speed_up=True):
         self.pos["x"]+=dx
         self.pos["y"]+=dy
         self.arcade.center_x=self.pos["x"]
@@ -65,10 +67,12 @@ class Vehicle():
         if self.last_moved_dist == 0: #threshold(?)
             self.crnt_mvmt_speed = 0
         # always 'speeding' up, and resetting to zero if there is a halt...
-        if self.crnt_mvmt_speed <= self.max_mvmt_speed:
-            #self.crnt_mvmt_speed = self.max_mvmt_speed # TODO: Change later. Currently for easier training
-            self.crnt_mvmt_speed += self.max_speed_up 
-        
+        if speed_up:   
+           if self.crnt_mvmt_speed <= self.max_mvmt_speed:
+                #self.crnt_mvmt_speed = self.max_mvmt_speed # TODO: Change later. Currently for easier training
+                self.crnt_mvmt_speed += self.max_speed_up 
+        else:
+            self.crnt_mvmt_speed = max(self.crnt_mvmt_speed - self.max_speed_down, self.min_speed_approach)
         
     def set_pos(self,new_pos):
         self.pos["x"] = new_pos["x"]
@@ -104,7 +108,12 @@ class Vehicle():
         logger.debug("Moved distance: %s, %s",dx,dy)
         if self.next_crossing:
             logger.debug("Knows next crossing")
-            if self.dist(self.get_new_pos(dx,dy), self.next_crossing.pos) < DIST_TO_TURN:
+            dist_next_crossing = self.dist(self.get_new_pos(dx,dy), self.next_crossing.pos)
+            #Slowing down, when the vehicle approaches the red traffic light, or (later) another car
+            if dist_next_crossing < DIST_TO_SLOW and dist_next_crossing >= DIST_TO_TURN and not self.next_crossing.get_my_traffic_light(self.street,self.direction).activated and self.street.is_free(self.pos, self.direction, self.dist_to_next_car, self.licNr): 
+                self.move(dx,dy,False)
+
+            if dist_next_crossing < DIST_TO_TURN:
                 logger.debug("Time to turn")
                 if self.next_crossing.get_my_traffic_light(self.street,self.direction).activated:
                     logger.debug("Traffic light is green")

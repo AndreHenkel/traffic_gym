@@ -107,16 +107,18 @@ class Controller():
 
     def step(self, passed_time):
         self.switched_t_lights = self._time_tick() # for now let's the traff
-        
+        just_left_veh = 0 
         for veh in self.vehicles:
             #let vehicles drive
             veh.drive()
             if veh.pos["x"] <0 or veh.pos["x"]>self.width:
                 veh.street.remove_vehicle(veh.licNr)
                 self.vehicles.remove(veh)
+                just_left_veh+=1
             elif veh.pos["y"] <0 or veh.pos["y"]>self.height:
                 veh.street.remove_vehicle(veh.licNr)
                 self.vehicles.remove(veh)
+                just_left_veh+=1
 
         done=False
         # keep total vehicles the same
@@ -127,7 +129,7 @@ class Controller():
         if len(self.vehicles)==0:
             done=True
 
-        return done
+        return done,just_left_veh
             
     def get_standing_car_count(self):
         cnt = 0
