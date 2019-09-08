@@ -55,3 +55,7 @@ When the lightning was told to switch, the agent cannot manipulate it anymore un
 The Observation Space will have following information:
   * All traffic light statuses (boolean)
   * The amount of cars directly affected by each traffic light
+
+# API
+## Setup
+setup(render=False, state_as_pixels=False, screen_width=400, screen_height=400, max_vehicles=1)
