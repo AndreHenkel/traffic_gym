@@ -7,7 +7,7 @@ import random
 import os
 
 # logging
-from datetime import datetime
+#from datetime import datetime
 import logging
 
 #config
@@ -19,9 +19,9 @@ directory = os.path.dirname(os.path.realpath(__file__))
 config.readfp(open(directory+'/config/parameters.cfg'))
 
 #logging
-now = datetime.now()
-dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
-logging.basicConfig(filename='logs/traffic_gym_'+dt_string+'.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
+#now = datetime.now()
+#dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
+#logging.basicConfig(filename='logs/traffic_gym_'+dt_string+'.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
 logger = logging.getLogger(__name__)
 
 # Parameters

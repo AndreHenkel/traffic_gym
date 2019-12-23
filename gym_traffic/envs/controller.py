@@ -16,6 +16,14 @@ from gym_traffic.envs.street import Street
 from gym_traffic.envs.vehicle import Vehicle
 from gym_traffic.envs.crossing import Crossing
 
+# logging
+from datetime import datetime
+import logging
+#logging
+now = datetime.now()
+dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
+logging.basicConfig(filename='logs/traffic_gym_'+dt_string+'.log',level=logging.DEBUG,format='%(asctime)s %(message)s')
+
 #config
 import configparser, os
 

@@ -10,17 +10,22 @@ import gym
 import numpy as np
 import configparser, os
 
+#logging
+import logging
+logger = logging.getLogger(__name__)
+
 #config reader
 config = configparser.ConfigParser()
 directory = os.path.dirname(os.path.realpath(__file__))
 config.readfp(open(directory+'/config/parameters.cfg'))
 
 #parameters
+#rewards
 DISTANCE_REWARD = float(config.get("REWARDS","DISTANCE_REWARD"))
 VEHICLE_STANDING_REWARD = float(config.get("REWARDS","VEHICLE_STANDING_REWARD"))
 ACTION_REWARD = float(config.get("REWARDS","ACTION_REWARD"))
 JUST_LEFT_VEH_REWARD = float(config.get("REWARDS","JUST_LEFT_VEH_REWARD"))
-
+#simulation
 MAX_EPISODE_STEPS = int(config.get("SIMULATION","MAX_EPISODE_STEPS"))
 
 
@@ -86,6 +91,7 @@ class GymTrafficEnv(gym.Env):
         else:
             obs = self._get_observation_space()
         reward = self._get_reward()
+        logger.debug("Reward: %s",reward)
         info = 0
         return obs, reward, done, info
 
@@ -110,7 +116,7 @@ class GymTrafficEnv(gym.Env):
 
     def _get_reward(self):
         """
-        Currently returns -0.33 times the amount of standing cars
+        Calculates and returns the reward of the just finished episode
         """
         standing_veh_count = self.cnt.get_standing_car_count()
         driving_veh_count = self.cnt.get_sum_of_driven_car_dist()
