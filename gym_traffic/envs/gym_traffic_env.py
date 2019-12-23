@@ -8,28 +8,20 @@ from gym_traffic.envs.display import Display
 
 import gym
 import numpy as np
-
 import configparser, os
 
-
-# Parameters
-MAX_EPISODE_STEPS = 500
-
-# Rewards
-DISTANCE_REWARD = 4.7 #0.0001
-VEHICLE_STANDING_REWARD = -4.9 #-0.09
-ACTION_REWARD = -0.1 #-0.001 #-0.01
-JUST_LEFT_VEH_REWARD = 7.0 # 0.01
-
-directory = os.path.dirname(os.path.realpath(__file__))
-
+#config reader
 config = configparser.ConfigParser()
-config.readfp(open(directory+'/defaults.cfg'))
+directory = os.path.dirname(os.path.realpath(__file__))
+config.readfp(open(directory+'/config/parameters.cfg'))
 
+#parameters
 DISTANCE_REWARD = float(config.get("REWARDS","DISTANCE_REWARD"))
 VEHICLE_STANDING_REWARD = float(config.get("REWARDS","VEHICLE_STANDING_REWARD"))
-ACTION_REWARD =float(config.get("REWARDS","ACTION_REWARD"))
+ACTION_REWARD = float(config.get("REWARDS","ACTION_REWARD"))
 JUST_LEFT_VEH_REWARD = float(config.get("REWARDS","JUST_LEFT_VEH_REWARD"))
+
+MAX_EPISODE_STEPS = int(config.get("SIMULATION","MAX_EPISODE_STEPS"))
 
 
 class GymTrafficEnv(gym.Env):
@@ -53,20 +45,21 @@ class GymTrafficEnv(gym.Env):
         self.screen_widht = screen_width
         self.screen_height = screen_height
         self.cnt = Controller(screen_width, screen_height, max_vehicles)
-        self.display = Display(self.cnt)
+        if render:
+            self.display = Display(self.cnt)
         self.cnt.setup()
         self.render = render
         self.state_as_pixels = state_as_pixels
         if self.render:
             self.display.setup()
-        
+
     def get_action_space(self):
         """
         Returns the action space length, that is used
         as a boolean array to control the traffic lights
         """
         return len(self.cnt.crossings)
-    
+
     def step(self, action):
         #action here
         for i,a in enumerate(action):
@@ -85,7 +78,7 @@ class GymTrafficEnv(gym.Env):
 
         if self.render:
             self._render()
-        
+
         # return values
         obs = 0
         if self.state_as_pixels:
@@ -95,11 +88,11 @@ class GymTrafficEnv(gym.Env):
         reward = self._get_reward()
         info = 0
         return obs, reward, done, info
-        
+
     def _render(self):
         self.display.on_draw()
         self.display.dispatch_events()
-        
+
     def reset(self):
         """
             Resets the environment and returns the current observation space afterwards.
@@ -114,7 +107,7 @@ class GymTrafficEnv(gym.Env):
         return obs
         # TODO: implement those
         # self.display.reset()
-        
+
     def _get_reward(self):
         """
         Currently returns -0.33 times the amount of standing cars
@@ -127,13 +120,13 @@ class GymTrafficEnv(gym.Env):
         #    else:
          #       green_cross -= 1 # red light ahead, -> negative reward
         #nmbr_veh = len(self.cnt.vehicles)+1
-        
-        
+
+
         nmbr_veh=1 #HOTFIX
         reward = standing_veh_count * VEHICLE_STANDING_REWARD/nmbr_veh + driving_veh_count * DISTANCE_REWARD/nmbr_veh + np.sum(self.last_action) * ACTION_REWARD + self.just_left_veh * JUST_LEFT_VEH_REWARD/nmbr_veh
         self.just_left_veh = 0
         return reward
-    
+
 
     def _get_observation_space(self):
         """
@@ -152,14 +145,14 @@ class GymTrafficEnv(gym.Env):
             obs.append(veh.pos["x"]/self.screen_width) # normalizing the input
             obs.append(veh.pos["y"]/self.screen_height) # normalizing the input
             obs.append(veh.crnt_mvmt_speed) # current speed
-            obs.append(int(veh.direction)) # adds also where the car is going. 
+            obs.append(int(veh.direction)) # adds also where the car is going.
 
         for i in range(self.max_vehicles-len(self.cnt.vehicles)): #episode is done, when all vehicles left the area, therefore left vehicles must be replaces with 0 filled values
             obs.append(0) # normalizing the input
             obs.append(0) # normalizing the input
             obs.append(0) # current speed
-            obs.append(0) # adds also where the car is going. 
-        
+            obs.append(0) # adds also where the car is going.
+
 
         obs = np.array(obs)
         return obs
