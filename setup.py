@@ -9,6 +9,5 @@ setup(name='gym_traffic',
                         'pyglet==1.4.0b1',
                         'arcade==1.3.7',
                         'keyboard',
-                        'numpy',
-                        'matplotlib'],  # And any other dependencies foo needs
+                        'numpy'],  # And any other dependencies foo needs
 )
