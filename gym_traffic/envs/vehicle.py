@@ -32,6 +32,12 @@ ICON_COMPRESSION = float(config.get("VEHICLE","ICON_COMPRESSION"))
 DIST_TO_TURN = float(config.get("VEHICLE","DIST_TO_TURN"))
 DIST_TO_SLOW = float(config.get("VEHICLE","DIST_TO_SLOW"))
 
+MAX_MVMT_SPEED = float(config.get("VEHICLE","MAX_MVMT_SPEED"))
+MAX_SPEED_UP = float(config.get("VEHICLE","MAX_SPEED_UP"))
+MAX_SPEED_DOWN = float(config.get("VEHICLE","MAX_SPEED_DOWN"))
+DIST_TO_NEXT_CAR = float(config.get("VEHICLE","DIST_TO_NEXT_CAR"))
+MIN_SPEED_WHILE_APPROACHING = float(config.get("VEHICLE","MIN_SPEED_WHILE_APPROACHING"))
+VARIANCE = float(config.get("VEHICLE","VARIANCE"))
 
 class Vehicle():
     def __init__(self, start_pos, start_velocity, length, licNr, direction, street, facing_degree):
@@ -43,16 +49,18 @@ class Vehicle():
         self.facing_degree = facing_degree
         self.street = street
 
+        (1-VARIANCE)*MAX_MVMT_SPEED,(1+VARIANCE)*MAX_MVMT_SPEED
+
         self.arcade = arcade.Sprite(CAR_ICON_FILE, ICON_COMPRESSION)
         self.arcade.center_x = self.pos["x"] # Starting position
         self.arcade.center_y = self.pos["y"]
         self.arcade.angle += facing_degree
         # attributes
-        self.max_mvmt_speed = random.uniform(2.0,3.6) # create differently fast cars
-        self.max_speed_up = random.uniform(0.1,0.22)
-        self.max_speed_down = random.uniform(0.3,0.5)
-        self.dist_to_next_car = random.uniform(30,40)
-        self.min_speed_approach = 0.3
+        self.max_mvmt_speed = random.uniform((1-VARIANCE)*MAX_MVMT_SPEED,(1+VARIANCE)*MAX_MVMT_SPEED) # create differently fast cars
+        self.max_speed_up = random.uniform((1-VARIANCE)*MAX_SPEED_UP,(1+VARIANCE)*MAX_SPEED_UP)
+        self.max_speed_down = random.uniform((1-VARIANCE)*MAX_SPEED_DOWN,(1+VARIANCE)*MAX_SPEED_DOWN)
+        self.dist_to_next_car = random.uniform((1-VARIANCE)*DIST_TO_NEXT_CAR,(1+VARIANCE)*DIST_TO_NEXT_CAR)
+        self.min_speed_approach = random.uniform((1-VARIANCE)*MIN_SPEED_WHILE_APPROACHING,(1+VARIANCE)*MIN_SPEED_WHILE_APPROACHING)
 
         self.next_crossing = 0
         self.last_moved_dist = 0.1 # for starting

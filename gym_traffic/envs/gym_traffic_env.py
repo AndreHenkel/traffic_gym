@@ -10,9 +10,17 @@ import gym
 import numpy as np
 import configparser, os
 
-#logging
+# logging
+from datetime import datetime
 import logging
-logger = logging.getLogger(__name__)
+#logging
+now = datetime.now()
+dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
+
+log_dir = 'logs'
+# Create target Directory if don't exist
+if not os.path.exists(log_dir):
+    os.mkdir(log_dir)
 
 #config reader
 config = configparser.ConfigParser()
@@ -20,6 +28,8 @@ directory = os.path.dirname(os.path.realpath(__file__))
 config.readfp(open(directory+'/config/parameters.cfg'))
 
 #parameters
+#logging
+LOG_LEVEL = int(config.get("LOGGING","LOG_LEVEL"))
 #rewards
 DISTANCE_REWARD = float(config.get("REWARDS","DISTANCE_REWARD"))
 VEHICLE_STANDING_REWARD = float(config.get("REWARDS","VEHICLE_STANDING_REWARD"))
@@ -28,6 +38,8 @@ JUST_LEFT_VEH_REWARD = float(config.get("REWARDS","JUST_LEFT_VEH_REWARD"))
 #simulation
 MAX_EPISODE_STEPS = int(config.get("SIMULATION","MAX_EPISODE_STEPS"))
 
+logging.basicConfig(filename=log_dir+'/traffic_gym_'+dt_string+'.log',level=LOG_LEVEL,format='%(asctime)s %(message)s')
+logger = logging.getLogger(__name__)
 
 class GymTrafficEnv(gym.Env):
     """
