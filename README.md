@@ -67,3 +67,8 @@ env.setup(render=False, state_as_pixels=False, screen_width=400, screen_height=4
 
 # GUI
 You can interact with the conjuctions by clicking on them with your left mouse button and so switch the traffic light status immediately.
+Moreover you can use the following keyboard buttons:
+	* ESC:   Will exit the application
+	* SPACE: Will pause the application until continued by pressing SPACE again
+
+
