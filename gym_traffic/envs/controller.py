@@ -29,6 +29,8 @@ config.readfp(open(directory+'/config/parameters.cfg'))
 STREET_IT = int(config.get("CONTROLLER","STREET_IT"))
 STREET_WIDTH = int(config.get("CONTROLLER","STREET_WIDTH"))
 
+RANDOM_SPAWN_POS_AT_SIDE = True if config.get("CONTROLLER","RANDOM_SPAWN_POS_AT_SIDE") == 0 else False #One-liner, to transform (0/1) to boolean
+
 # Street_Pos definition (namedtuple)
 Street_Pos = collections.namedtuple('Street_Pos', 'x1 y1 x2 y2')
 
@@ -42,6 +44,8 @@ class Controller():
         self.width = width
         self.height = height
         self.switched_t_lights = 0
+
+        print(RANDOM_SPAWN_POS_AT_SIDE)
 
     def setup(self):
         self.generate_map()
@@ -103,7 +107,7 @@ class Controller():
     def generate_vehicles(self):
         for i in range(0,self.max_vehicles):
             crt_street = np.random.choice(self.streets)
-            veh = self.generate_vehicle(crt_street,True)
+            veh = self.generate_vehicle(crt_street,RANDOM_SPAWN_POS_AT_SIDE)
             self.vehicles.append(veh)
 
     def generate_vehicle(self, vehs_street, at_side):#
@@ -164,7 +168,7 @@ class Controller():
         # put vehicle randomly
         for i in range(0,self.max_vehicles):
             crt_street = np.random.choice(self.streets)
-            veh = self.generate_vehicle(crt_street,True)
+            veh = self.generate_vehicle(crt_street,RANDOM_SPAWN_POS_AT_SIDE)
             self.vehicles.append(veh)
 
         # change traffic lights randomly
