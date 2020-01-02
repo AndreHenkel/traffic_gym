@@ -33,6 +33,7 @@ class Display(pyglet.window.Window):
         directory = os.path.dirname(os.path.realpath(__file__))
         self.set_icon(pyglet.image.load(directory+"/img/car_w_rights.png"))
         self.paused = False
+        self.step_forward = False
 
 
     def setup(self):
@@ -71,6 +72,9 @@ class Display(pyglet.window.Window):
             arcade.draw_text("Paused", 0, 0, arcade.color.BLACK, 12)
             self.flip()
             self.dispatch_events() # enables listening to "on_key_press"
+            if self.step_forward:
+                self.step_forward = False
+                break # continues for one iteration
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -89,6 +93,8 @@ class Display(pyglet.window.Window):
                 self.paused = False
             else:
                 self.paused = True
+        elif self.paused and symbol == key.RIGHT: # Only works while paused
+            self.step_forward = True # Stays true until one step was taken
 
 
     def update(self, delta_time):

@@ -70,5 +70,7 @@ You can interact with the conjuctions by clicking on them with your left mouse b
 Moreover you can use the following keyboard buttons:
 	* ESC:   Will exit the application
 	* SPACE: Will pause the application until continued by pressing SPACE again
+	* RIGHT: Pressing the "Right"-Arrow will take a step forward in the simulation.  NOTE: Only works while paused
 
+If you are in paused state, you can click on the conjunctions to change the traffic light. Those interactions will take effect as soon as the simulation continues.
 
