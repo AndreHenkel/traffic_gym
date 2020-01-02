@@ -59,7 +59,7 @@ class GymTrafficEnv(gym.Env):
 
     def setup(self, render=False, state_as_pixels=False, screen_width=400, screen_height=400, max_vehicles=1):
         self.max_vehicles=max_vehicles
-        self.screen_widht = screen_width
+        self.screen_width = screen_width
         self.screen_height = screen_height
         self.cnt = Controller(screen_width, screen_height, max_vehicles)
         if render:
@@ -158,19 +158,18 @@ class GymTrafficEnv(gym.Env):
               #      obs.append(0.7)
                # else:
                 #    obs.append(0.1)
-            obs.append(cros.status/2)#divide by 2 to lessen the impact, since the x/y coordinates are already [0,1]
+            obs.append(cros.status)#divide by 2 to lessen the impact, since the x/y coordinates are already [0,1]
         for veh in self.cnt.vehicles:
             obs.append(veh.pos["x"]/self.screen_width) # normalizing the input
             obs.append(veh.pos["y"]/self.screen_height) # normalizing the input
             obs.append(veh.crnt_mvmt_speed) # current speed
             obs.append(int(veh.direction)) # adds also where the car is going.
 
-        for i in range(self.max_vehicles-len(self.cnt.vehicles)): #episode is done, when all vehicles left the area, therefore left vehicles must be replaces with 0 filled values
+        for i in range(self.max_vehicles-len(self.cnt.vehicles)): #episode is done, when all vehicles left the area, therefore left vehicles must be replaced with 0 filled values
             obs.append(0) # normalizing the input
             obs.append(0) # normalizing the input
             obs.append(0) # current speed
             obs.append(0) # adds also where the car is going.
-
 
         obs = np.array(obs)
         return obs
