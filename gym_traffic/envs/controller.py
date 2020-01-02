@@ -45,8 +45,6 @@ class Controller():
         self.height = height
         self.switched_t_lights = 0
 
-        print(RANDOM_SPAWN_POS_AT_SIDE)
-
     def setup(self):
         self.generate_map()
         self.generate_vehicles()

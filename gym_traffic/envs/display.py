@@ -7,6 +7,7 @@ import numpy as np
 import os
 import random
 import pyglet
+from time import sleep
 from pyglet import clock
 from pyglet.window import key
 from pyglet.gl import *
@@ -31,6 +32,7 @@ class Display(pyglet.window.Window):
         self.cnt = cnt
         directory = os.path.dirname(os.path.realpath(__file__))
         self.set_icon(pyglet.image.load(directory+"/img/car_w_rights.png"))
+        self.paused = False
 
 
     def setup(self):
@@ -38,7 +40,7 @@ class Display(pyglet.window.Window):
         self.clear()
         arcade.set_background_color(arcade.color.WHITE)
 
-    def veh_draw(self):
+    def _veh_draw(self):
         for veh in self.cnt.vehicles:
             veh.draw()
 
@@ -58,9 +60,18 @@ class Display(pyglet.window.Window):
                     arcade.draw_circle_outline(tl.pos["x"], tl.pos["y"], 4, arcade.color.RED, 3)
 
         # draw all vehicles
-        self.veh_draw()
+        self._veh_draw()
         # render
         self.flip()
+
+        #pause
+        while self.paused:
+            sleep(0.1)
+            # drawing text to indicate, that it is paused currently
+            arcade.draw_text("Paused", 0, 0, arcade.color.BLACK, 12)
+            self.flip()
+            self.dispatch_events() # enables listening to "on_key_press"
+
 
     def on_mouse_press(self, x, y, button, modifiers):
         for c in self.cnt.crossings:
@@ -69,16 +80,26 @@ class Display(pyglet.window.Window):
                 c.switch_traffic_lights()
                 return
 
+
     def on_key_press(self,symbol,modifiers):
         if symbol == key.ESCAPE:
             self.close()
+        elif symbol == key.SPACE:
+            if self.paused: #True
+                self.paused = False
+            else:
+                self.paused = True
+
 
     def update(self, delta_time):
-        """ All the logic to move, and the game logic goes here.
-            For an first easy implementation, all vehicles from control will be sent here and drawn as sprites.
-            Those sprites will be identified through the unique "registration plate number" on each vehicle.
+        """
+        NOTE: Seems not to be used currently. Attend to "on_draw" method call
+         All the logic to move, and the game logic goes here.
+         For an first easy implementation, all vehicles from control will be sent here and drawn as sprites.
+         Those sprites will be identified through the unique "registration plate number" on each vehicle.
         """
         self.cnt.step(delta_time)
+
 
     def get_current_image(self):
         """
