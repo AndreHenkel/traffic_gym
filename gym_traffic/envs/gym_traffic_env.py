@@ -33,6 +33,7 @@ LOG_LEVEL = int(config.get("LOGGING","LOG_LEVEL"))
 #rewards
 DISTANCE_REWARD = float(config.get("REWARDS","DISTANCE_REWARD"))
 VEHICLE_STANDING_REWARD = float(config.get("REWARDS","VEHICLE_STANDING_REWARD"))
+VEHICLE_MOVING_REWARD = float(config.get("REWARDS","VEHICLE_MOVING_REWARD"))
 ACTION_REWARD = float(config.get("REWARDS","ACTION_REWARD"))
 JUST_LEFT_VEH_REWARD = float(config.get("REWARDS","JUST_LEFT_VEH_REWARD"))
 MVMT_SPEED_CHANGE_REWARD = float(config.get("REWARDS","MVMT_SPEED_CHANGE_REWARD"))
@@ -89,21 +90,24 @@ class GymTrafficEnv(gym.Env):
         self.last_action = action
 
         # update
-        done,left_veh = self.cnt.step(0)
-        self.step_cnt += 1
-        self.just_left_veh = left_veh
-
-
-        if self.render:
-            self._render()
-
-        # return values
+        done = False
+        reward = 0
         obs = 0
-        if self.state_as_pixels:
-            obs = self.display.get_current_image()
-        else:
-            obs = self._get_observation_space()
-        reward = self._get_reward()
+        for i in range(3): #Doing 5 steps now
+            done,left_veh = self.cnt.step(0)
+            self.step_cnt += 1
+            self.just_left_veh = left_veh
+
+            if self.render:
+                self._render()
+
+            # return values
+            if self.state_as_pixels:
+                obs = self.display.get_current_image()
+            else:
+                obs = self._get_observation_space()
+            reward += self._get_reward()
+
         logger.debug("Reward: %s",reward)
         info = 0
         return obs, reward, done, info
@@ -132,6 +136,7 @@ class GymTrafficEnv(gym.Env):
         Calculates and returns the reward of the just finished episode
         """
         standing_veh_count = self.cnt.get_standing_car_count()
+        moving_veh_count = self.cnt.get_moving_car_count()
         driving_veh_count = self.cnt.get_sum_of_driven_car_dist()
         mvmt_speed_change = self.cnt.get_total_changed_speed()
         #for veh in self.cnt.vehicles:
@@ -144,7 +149,7 @@ class GymTrafficEnv(gym.Env):
 
         #nmbr_veh=1 #HOTFIX
 
-        reward = standing_veh_count * VEHICLE_STANDING_REWARD + driving_veh_count * DISTANCE_REWARD + ACTION_REWARD * np.sum(self.last_action) + JUST_LEFT_VEH_REWARD * self.just_left_veh + MVMT_SPEED_CHANGE_REWARD * mvmt_speed_change
+        reward = standing_veh_count * VEHICLE_STANDING_REWARD + moving_veh_count * VEHICLE_MOVING_REWARD + driving_veh_count * DISTANCE_REWARD + ACTION_REWARD * np.sum(self.last_action) + JUST_LEFT_VEH_REWARD * self.just_left_veh + MVMT_SPEED_CHANGE_REWARD * mvmt_speed_change
         reward/=self.max_vehicles # standardize
 
         self.just_left_veh = 0
@@ -167,14 +172,14 @@ class GymTrafficEnv(gym.Env):
         for veh in self.cnt.vehicles:
             obs.append(veh.pos["x"]/self.screen_width) # normalizing the input
             obs.append(veh.pos["y"]/self.screen_height) # normalizing the input
-            obs.append(veh.crnt_mvmt_speed) # current speed
-            obs.append(int(veh.direction)) # adds also where the car is going.
+            #obs.append(veh.crnt_mvmt_speed) # current speed
+            #obs.append(int(veh.direction)) # adds also where the car is going.
 
         for i in range(self.max_vehicles-len(self.cnt.vehicles)): #episode is done, when all vehicles left the area, therefore left vehicles must be replaced with 0 filled values
             obs.append(-1) # normalizing the input
             obs.append(-1) # normalizing the input
-            obs.append(-1) # current speed
-            obs.append(-1) # adds also where the car is going.
+            #obs.append(-1) # current speed
+            #obs.append(-1) # adds also where the car is going.
 
         obs = np.array(obs)
         return obs
