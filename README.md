@@ -33,9 +33,9 @@ You can try the installation with two examples in the "tests/" folder.
 
 # Reward
 The reward for each timestep is calculated by the following factors
-    * For each vehicle that stands multiplied by its (negative) reward factor
-    * For each vehicle that moves, multiplied by its distance and its (positive) reward factor
-    * For each action that was used during that timestep multiplied by its (negative) reward factor
+  * For each vehicle that stands multiplied by its (negative) reward factor
+  * For each vehicle that moves, multiplied by its distance and its (positive) reward factor
+  * For each action that was used during that timestep multiplied by its (negative) reward factor
 
 # Action Space
 The action space will consist of N variables with each time either +1 for changing the lightning, or 0 for doing nothing.
@@ -51,10 +51,10 @@ Or it will return the pixels from the environment. (Only if state_as_pixels is s
 
 # Vehicle behaviour
 Each vehicle has slightly different values for the following (given by the Variance parameter):
-    * maximum speed
-    * maximum speeding up
-    * slowing down factor
-    * distance to next car
+  * maximum speed
+  * maximum speeding up
+  * slowing down factor
+  * distance to next car
 
 # Parameters
 The parameters are defined in the "config/parameters.cfg" file.
@@ -68,9 +68,9 @@ env.setup(render=False, state_as_pixels=False, screen_width=400, screen_height=4
 # GUI
 You can interact with the conjuctions by clicking on them with your left mouse button and so switch the traffic light status immediately.
 Moreover you can use the following keyboard buttons:
-	* ESC:   Will exit the application
-	* SPACE: Will pause the application until continued by pressing SPACE again
-	* RIGHT: Pressing the "Right"-Arrow will take a step forward in the simulation.  NOTE: Only works while paused
+  * ESC:   Will exit the application
+  * SPACE: Will pause the application until continued by pressing SPACE again
+  * RIGHT: Pressing the "Right"-Arrow will take a step forward in the simulation.  NOTE: Only works while paused
 
 If you are in paused state, you can click on the conjunctions to change the traffic light. Those interactions will take effect as soon as the simulation continues.
 
