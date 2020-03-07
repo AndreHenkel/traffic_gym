@@ -65,6 +65,7 @@ class Vehicle():
         self.next_crossing = 0
         self.last_moved_dist = 0.1 # for starting
         self.crnt_mvmt_speed = 0.1 # for starting
+        self.mvmt_speed_change = 0
 
         # waits a bit until the next crossing is checked
         self.crossed = 0
@@ -88,6 +89,8 @@ class Vehicle():
         self.arcade.center_y=self.pos["y"]
         self.last_moved_dist = dx+dy # because one is usually zero anyway, and it matters more, if it changed at all
 
+        mvmt_speed_before = self.crnt_mvmt_speed
+
         # set mvmt speed to zero if vehicle hasn't moved
         if abs(self.last_moved_dist) == 0: #threshold(?)
             self.crnt_mvmt_speed = 0
@@ -102,6 +105,8 @@ class Vehicle():
                 self.crnt_mvmt_speed += self.max_speed_up
         else: #slowing down
             self.crnt_mvmt_speed = max(self.crnt_mvmt_speed - self.max_speed_down, self.min_speed_approach)
+
+        self.mvmt_speed_change = self.crnt_mvmt_speed - mvmt_speed_before
 
     def set_pos(self,new_pos):
         self.pos["x"] = new_pos["x"]

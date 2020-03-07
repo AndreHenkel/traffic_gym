@@ -35,6 +35,7 @@ DISTANCE_REWARD = float(config.get("REWARDS","DISTANCE_REWARD"))
 VEHICLE_STANDING_REWARD = float(config.get("REWARDS","VEHICLE_STANDING_REWARD"))
 ACTION_REWARD = float(config.get("REWARDS","ACTION_REWARD"))
 JUST_LEFT_VEH_REWARD = float(config.get("REWARDS","JUST_LEFT_VEH_REWARD"))
+MVMT_SPEED_CHANGE_REWARD = float(config.get("REWARDS","MVMT_SPEED_CHANGE_REWARD"))
 #simulation
 MAX_EPISODE_STEPS = int(config.get("SIMULATION","MAX_EPISODE_STEPS"))
 
@@ -132,6 +133,7 @@ class GymTrafficEnv(gym.Env):
         """
         standing_veh_count = self.cnt.get_standing_car_count()
         driving_veh_count = self.cnt.get_sum_of_driven_car_dist()
+        mvmt_speed_change = self.cnt.get_total_changed_speed()
         #for veh in self.cnt.vehicles:
          #   if veh.green_cross:
           #      green_cross += 1
@@ -140,8 +142,11 @@ class GymTrafficEnv(gym.Env):
         #nmbr_veh = len(self.cnt.vehicles)+1
 
 
-        nmbr_veh=1 #HOTFIX
-        reward = standing_veh_count * VEHICLE_STANDING_REWARD/nmbr_veh + driving_veh_count * DISTANCE_REWARD/nmbr_veh + np.sum(self.last_action) * ACTION_REWARD + self.just_left_veh * JUST_LEFT_VEH_REWARD/nmbr_veh
+        #nmbr_veh=1 #HOTFIX
+
+        reward = standing_veh_count * VEHICLE_STANDING_REWARD + driving_veh_count * DISTANCE_REWARD + ACTION_REWARD * np.sum(self.last_action) + JUST_LEFT_VEH_REWARD * self.just_left_veh + MVMT_SPEED_CHANGE_REWARD * mvmt_speed_change
+        reward/=self.max_vehicles # standardize
+
         self.just_left_veh = 0
         return reward
 
@@ -166,10 +171,10 @@ class GymTrafficEnv(gym.Env):
             obs.append(int(veh.direction)) # adds also where the car is going.
 
         for i in range(self.max_vehicles-len(self.cnt.vehicles)): #episode is done, when all vehicles left the area, therefore left vehicles must be replaced with 0 filled values
-            obs.append(0) # normalizing the input
-            obs.append(0) # normalizing the input
-            obs.append(0) # current speed
-            obs.append(0) # adds also where the car is going.
+            obs.append(-1) # normalizing the input
+            obs.append(-1) # normalizing the input
+            obs.append(-1) # current speed
+            obs.append(-1) # adds also where the car is going.
 
         obs = np.array(obs)
         return obs

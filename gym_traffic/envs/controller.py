@@ -29,7 +29,8 @@ config.readfp(open(directory+'/config/parameters.cfg'))
 STREET_IT = int(config.get("CONTROLLER","STREET_IT"))
 STREET_WIDTH = int(config.get("CONTROLLER","STREET_WIDTH"))
 
-RANDOM_SPAWN_POS_AT_SIDE = True if config.get("CONTROLLER","RANDOM_SPAWN_POS_AT_SIDE") == 0 else False #One-liner, to transform (0/1) to boolean
+RANDOM_SPAWN_POS_AT_SIDE = True if config.get("CONTROLLER","RANDOM_SPAWN_POS_AT_SIDE") == "1" else False #One-liner, to transform (0/1) to boolean
+KEEP_VEH_NBR_CONSTANT = True if config.get("CONTROLLER","KEEP_VEH_NBR_CONSTANT") == "1" else False
 
 # Street_Pos definition (namedtuple)
 Street_Pos = collections.namedtuple('Street_Pos', 'x1 y1 x2 y2')
@@ -133,10 +134,12 @@ class Controller():
 
         done=False
         # keep total vehicles the same
-        #while len(self.vehicles)<self.max_vehicles:
-         #   gen_veh=self.generate_vehicle(np.random.choice(self.streets),False)
-          #  self.vehicles.append(gen_veh)
-           # done=True
+        if KEEP_VEH_NBR_CONSTANT:
+            while len(self.vehicles)<self.max_vehicles:
+                gen_veh=self.generate_vehicle(np.random.choice(self.streets),False)
+                self.vehicles.append(gen_veh)
+                # done=True
+
         if len(self.vehicles)==0:
             done=True
 
@@ -147,6 +150,12 @@ class Controller():
         for veh in self.vehicles:
             if veh.last_moved_dist == 0:
                 cnt+=1
+        return cnt
+
+    def get_total_changed_speed(self):
+        cnt = 0
+        for veh in self.vehicles:
+            cnt += veh.mvmt_speed_change
         return cnt
 
     def get_sum_of_driven_car_dist(self):
