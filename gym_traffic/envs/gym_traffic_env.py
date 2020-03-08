@@ -93,7 +93,7 @@ class GymTrafficEnv(gym.Env):
         done = False
         reward = 0
         obs = 0
-        for i in range(3): #Doing 5 steps now
+        for i in range(1): #Doing 3 steps now
             done,left_veh = self.cnt.step(0)
             self.step_cnt += 1
             self.just_left_veh = left_veh
@@ -149,7 +149,7 @@ class GymTrafficEnv(gym.Env):
 
         #nmbr_veh=1 #HOTFIX
 
-        reward = standing_veh_count * VEHICLE_STANDING_REWARD + moving_veh_count * VEHICLE_MOVING_REWARD + driving_veh_count * DISTANCE_REWARD + ACTION_REWARD * np.sum(self.last_action) + JUST_LEFT_VEH_REWARD * self.just_left_veh + MVMT_SPEED_CHANGE_REWARD * mvmt_speed_change
+        reward = standing_veh_count * VEHICLE_STANDING_REWARD + moving_veh_count * VEHICLE_MOVING_REWARD + driving_veh_count * DISTANCE_REWARD + ACTION_REWARD * np.sum(self.last_action) * self.max_vehicles  + JUST_LEFT_VEH_REWARD * self.just_left_veh + MVMT_SPEED_CHANGE_REWARD * mvmt_speed_change
         reward/=self.max_vehicles # standardize
 
         self.just_left_veh = 0

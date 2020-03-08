@@ -26,7 +26,7 @@ directory = os.path.dirname(os.path.realpath(__file__))
 config.readfp(open(directory+'/config/parameters.cfg'))
 
 # Parameters
-STREET_IT = int(config.get("CONTROLLER","STREET_IT"))
+STREET_IT = int(config.get("CONTROLLER","STREET_IT")) 
 STREET_WIDTH = int(config.get("CONTROLLER","STREET_WIDTH"))
 
 RANDOM_SPAWN_POS_AT_SIDE = True if config.get("CONTROLLER","RANDOM_SPAWN_POS_AT_SIDE") == "1" else False #One-liner, to transform (0/1) to boolean
